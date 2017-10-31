@@ -18,8 +18,8 @@ RectF SpriteSheet::GetClippedImage(const int & index)
 	float columns = width / clipWidth;
 	int col = index % (int)columns;
 	int row =  index / (int)columns;
-	return RectF((float)col*clipWidth,(float)row*clipWidth,
-		((float)col*clipWidth)+clipWidth,((float)row*clipWidth)+clipWidth);
+	return RectF((float)col*clipWidth,(float)row*clipHeight,
+		((float)col*clipWidth)+clipWidth,((float)row*clipHeight)+clipHeight);
 }
 
 ID2D1Bitmap * SpriteSheet::GetTexture()

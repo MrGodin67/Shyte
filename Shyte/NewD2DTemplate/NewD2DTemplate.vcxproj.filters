@@ -31,6 +31,27 @@
     <Filter Include="Objects\Camera">
       <UniqueIdentifier>{cbfa9b39-1673-4961-8b5b-7b9c4909ab9a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\Level">
+      <UniqueIdentifier>{fdaa6659-d77b-4539-a6e7-ca08bbb7282d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Level\Tile">
+      <UniqueIdentifier>{1922cf88-e441-424d-bf80-1db7f1de7ce2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Level\maps">
+      <UniqueIdentifier>{03f9ec82-9ab6-4ff6-bb64-117ed56f3149}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NewFilter1">
+      <UniqueIdentifier>{f10117e5-db2e-4d7f-a34f-842ca8301d33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Entity">
+      <UniqueIdentifier>{18494379-efd6-4135-9b47-f042601eadb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Player">
+      <UniqueIdentifier>{a819a917-32dd-4cd6-9f70-193c3f6dd3b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Entity\State">
+      <UniqueIdentifier>{051bf478-4a6e-434c-81c3-f8b2f9faccae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -89,6 +110,21 @@
     </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Objects\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>Objects\Level\Tile</Filter>
+    </ClCompile>
+    <ClCompile Include="Level.cpp">
+      <Filter>Objects\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="StringHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Objects\Entity</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -185,5 +221,37 @@
     <ClInclude Include="Camera.h">
       <Filter>Objects\Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Objects\Level\Tile</Filter>
+    </ClInclude>
+    <ClInclude Include="Level.h">
+      <Filter>Objects\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="StringHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Objects\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityState.h">
+      <Filter>Objects\Entity\State</Filter>
+    </ClInclude>
+    <ClInclude Include="randomizer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="map001.txt">
+      <Filter>Objects\Level\maps</Filter>
+    </Text>
+    <Text Include="map002.txt">
+      <Filter>Objects\Level\maps</Filter>
+    </Text>
   </ItemGroup>
 </Project>

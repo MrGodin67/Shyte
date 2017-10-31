@@ -22,7 +22,8 @@
 #include "stdio.h"
 #include <stdlib.h> 
 #include <heapapi.h>
-
+#include <cmath>
+#include <array>
 // user defined
 
 #include "errors.h"
@@ -31,21 +32,36 @@
 #include <unordered_map>
 
 
-#define MAX_GROUPS 24
+#define MAX_TILES_PER_ROW 255
+#define MAX_TILES_PER_COL 255
+#define MAX_ENEMIES 30
+
+#define GRAVITY 9.8f
+#define MOVE_LEFT -1
+#define MOVE_RIGHT 1
+
 
 typedef std::vector<std::string> stringList;
 
 
 template<class Interface>
-inline void SafeRelease(
-	Interface **ppInterfaceToRelease
-	)
+inline void SafeRelease(Interface **ppInterfaceToRelease)
 {
 	if (*ppInterfaceToRelease != NULL)
 	{
 		(*ppInterfaceToRelease)->Release();
 
 		(*ppInterfaceToRelease) = NULL;
+	}
+};
+template<class Interface>
+inline void SafeDelete(Interface **ppInterface)
+{
+	if (*ppInterface != NULL)
+	{
+		delete *ppInterface;
+
+		(*ppInterface) = NULL;
 	}
 }
 

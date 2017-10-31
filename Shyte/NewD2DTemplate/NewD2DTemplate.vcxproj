@@ -154,17 +154,22 @@
     <ClCompile Include="Direct3D_2D.cpp" />
     <ClCompile Include="DrrectWrite.cpp" />
     <ClCompile Include="DXErr.cpp" />
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="Level.cpp" />
     <ClCompile Include="Locator.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="SimpleTimer.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sprite2.cpp" />
     <ClCompile Include="SpriteSheet.cpp" />
+    <ClCompile Include="StringHandler.cpp" />
     <ClCompile Include="TextureManager.cpp" />
+    <ClCompile Include="Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -178,14 +183,20 @@
     <ClInclude Include="DirectWrite.h" />
     <ClInclude Include="Drawable.h" />
     <ClInclude Include="DXErr.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="EntityState.h" />
+    <ClInclude Include="FileManager.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameState.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="includes.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="keyboard.h" />
+    <ClInclude Include="Level.h" />
     <ClInclude Include="Locator.h" />
     <ClInclude Include="mouse.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="randomizer.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="SimpleTimer.h" />
@@ -194,10 +205,16 @@
     <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Sprite2.h" />
     <ClInclude Include="SpriteSheet.h" />
+    <ClInclude Include="StringHandler.h" />
     <ClInclude Include="TextureManager.h" />
+    <ClInclude Include="Tile.h" />
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="VecRect.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="map001.txt" />
+    <Text Include="map002.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

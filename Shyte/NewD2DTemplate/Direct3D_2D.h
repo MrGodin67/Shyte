@@ -7,6 +7,7 @@
 #include <DirectXMath.h>
 #include <wrl.h>
 #include <assert.h>
+#include "includes.h"
 using namespace Microsoft;
 using namespace WRL;
 using namespace DirectX;
@@ -18,15 +19,7 @@ using namespace DirectX;
 
 
 
-#ifndef SAFE_DELETE
-#define SAFE_DELETE(p)       { if (p) { delete (p);     (p)=NULL; } }
-#endif    
-#ifndef SAFE_DELETE_ARRAY
-#define SAFE_DELETE_ARRAY(p) { if (p) { delete[] (p);   (p)=NULL; } }
-#endif    
-#ifndef SAFE_RELEASE
-#define SAFE_RELEASE(p)      { if (p) { (p)->Release(); (p)=NULL; } }
-#endif
+
 
 
 class Direct3D
@@ -73,9 +66,7 @@ protected:
 	ComPtr<ID3D11BlendState> m_alphaEnableBlendingState2;
 
 protected:
-	//////////////////////////////////
-	// Direct 2D sharing swap chain buffer with Direct 3D 
-	///////////////////////////////////
+	
 	ComPtr<ID2D1Factory> m_pD2DFactory;
 	ID2D1SolidColorBrush* m_pD2DWhiteBrush = nullptr;
 	ID2D1RenderTarget* m_pD2DRenderTarget = nullptr;
