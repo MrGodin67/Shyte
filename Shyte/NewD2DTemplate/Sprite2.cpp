@@ -5,7 +5,7 @@ void Sprite::Draw(Camera & cam)
 {
 	for (size_t c = 0; c < m_seqIndices.size(); c++)
 	{
-		TextureManager::ImageClip iClip = Locator::ImageManager->GetClip(m_imageName, m_seqIndices[c]);
+		TextureManager::ImageClip iClip = Locator::ImageManager()->GetClip(m_imageName, m_seqIndices[c]);
 		m_renderDesc.clipRect = iClip.rect.ToD2D();
 		m_renderDesc.image = iClip.bitmap;
 		m_renderDesc.angle = m_rotAngles[c];

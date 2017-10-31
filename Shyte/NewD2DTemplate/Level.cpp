@@ -11,7 +11,7 @@ void Level::Initialize(std::string  mapFilename,Player* p)
 	assert(p);
 	FileManager::ReadLevelData(mapFilename.c_str(), levelData);
 	Tile::SetDimensions(levelData.tileDimensions.x, levelData.tileDimensions.y);
-	Tile::SetImage(Locator::ImageManager->GetImage("level1")->GetTexture());
+	Tile::SetImage(Locator::ImageManager()->GetImage("level1")->GetTexture());
 	m_tiles.resize(levelData.rowsColumns.x * levelData.rowsColumns.y);
 	Vec2f startPos = { 0.0f,0.0f };
 	bool passable = false;
@@ -68,7 +68,7 @@ void Level::Initialize(std::string  mapFilename,Player* p)
 			break;
 			}
 			m_tiles[index] = std::make_unique<Tile>(startPos,
-				Locator::ImageManager->GetImage("level1")->GetClippedImage(clipIndex), passable);
+				Locator::ImageManager()->GetImage("level1")->GetClippedImage(clipIndex), passable);
 			startPos.x += Tile::Width();
 		}
 		startPos.y += Tile::Height();

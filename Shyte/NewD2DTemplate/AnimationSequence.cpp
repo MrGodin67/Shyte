@@ -23,7 +23,7 @@ void AnimationSequence::Update(const float & dt)
 				else
 					m_done = true;
 			}
-			m_renderDesc.clipRect = Locator::ImageManager->GetImage(m_imageName)->GetClippedImage(m_seqIndex).ToD2D();
+			m_renderDesc.clipRect = Locator::ImageManager()->GetImage(m_imageName)->GetClippedImage(m_seqIndex).ToD2D();
 		}
 	}
 }

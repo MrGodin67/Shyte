@@ -28,7 +28,7 @@ void Player::Update(const float & dt)
 	EntityState::DoState(m_currentState, m_movement);
 	Vec2f pos = GetPosition() + m_movement.velocity  * dt;
 	SetPosition(pos);
-	m_renderDesc.clipRect = Locator::ImageManager->GetImage("char1")->GetClippedImage(mp_seqPtr->at(m_movement.seq_Index)).ToD2D();
+	m_renderDesc.clipRect = Locator::ImageManager()->GetImage("char1")->GetClippedImage(mp_seqPtr->at(m_movement.seq_Index)).ToD2D();
 }
 
 RectF Player::GetCollisionRect()

@@ -18,6 +18,7 @@ Game::Game(Direct3DWindow & wnd)
 	LoadImages();
 	CreatePlayer();
 	InitCamera();
+	InitMenus();
 	//CreateLevel("data\\levels\\map001.bin");
 	CreateLevel("data\\levels\\map002.bin");
 	
@@ -59,6 +60,7 @@ HRESULT Game::RenderScene()
 	if (FAILED(hr)) { return hr; }
 	m_currLevel->Draw(gfx);
 	m_cam.Rasterize(m_player->GetDrawable());
+	//m_currentMenu->Draw(m_cam);
 	//gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_player->GetCollisionRect(-m_cam.GetPos()).ToD2D(), D2D1::ColorF(1.0f,1.0f,1.0f,1.0f));;
 	hr = gfx.EndScene();
 	if (FAILED(hr)) { return hr; }
@@ -85,6 +87,7 @@ void Game::LoadImages()
 	data.emplace_back("char1", L"assets\\char1.png", 24.0f, 32.0f);
 	data.emplace_back("char2", L"assets\\char2.png", 24.0f, 32.0f);
 	data.emplace_back("level1", L"assets\\level1.png", 64.0f, 64.0f);
+	data.emplace_back("start_screen", L"assets\\startscreen.png", 48.0f, 16.0f);
 	m_textureHandler->LoadImages(data);
 	Locator::SetImageManager(m_textureHandler.get());
 }
@@ -107,6 +110,12 @@ void Game::InitCamera()
 {
 	m_cam.ConfineToMap(RectF(0.0f, 0.0f, 20.0f*64.0f, 20.0f*64.0f));
 	m_cam.UpdatePosition(m_player->GetPosition());
+}
+
+void Game::InitMenus()
+{
+	m_menus["start_screen"] = std::make_unique<StartScreen>();
+	m_currentMenu = m_menus["start_screen"].get();
 }
 
 void Game::CreateLevel(std::string mapFilename)

@@ -56,7 +56,7 @@ public:
 			m_rotAngles[c] = 0.0f;
 		m_position = Vec2f(desc.drawRect.left + ((desc.drawRect.right - desc.drawRect.left) / 2.0f),
 			desc.drawRect.top + ((desc.drawRect.bottom - desc.drawRect.top) / 2.0f));
-		m_renderDesc.image = Locator::ImageManager->GetImage(m_imageName)->GetTexture();
+		m_renderDesc.image = Locator::ImageManager()->GetImage(m_imageName)->GetTexture();
 	}
 	
 	virtual void Draw(class Camera& cam)override;

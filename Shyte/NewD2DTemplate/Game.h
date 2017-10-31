@@ -14,6 +14,7 @@
 #include "Level.h"
 #include "randomizer.h"
 #include "FileManager.h"
+#include "StartScreen.h"
 class Game
 {
 	
@@ -29,6 +30,8 @@ private:
 	std::unique_ptr<Player> m_player;
 	std::unique_ptr<Level> m_currLevel;
 
+	std::unordered_map<std::string, std::unique_ptr<UserInterface>> m_menus;
+	UserInterface* m_currentMenu = nullptr;
 	
 public:
 	Game(class Direct3DWindow& wnd);
@@ -47,6 +50,7 @@ private:
 	void LoadImages();
 	void CreatePlayer();
 	void InitCamera();
+	void InitMenus();
 	void CreateLevel(std::string mapFilename);
 
 	void ConstructLevelsFromTextFile(std::string mapFilename);

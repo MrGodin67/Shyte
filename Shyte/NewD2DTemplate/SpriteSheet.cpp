@@ -3,7 +3,7 @@
 SpriteSheet::SpriteSheet(std::wstring filename, float clipWidth, float clipHeight)
 	:clipWidth(clipWidth),clipHeight(clipHeight)
 {
-	texture = std::make_unique<D2D1Texture>(Locator::RenderTarget, filename);
+	texture = std::make_unique<D2D1Texture>(Locator::RenderTarget(), filename);
 	assert(texture);
 	width = (float)texture->Width();
 	height = (float)texture->Height();
