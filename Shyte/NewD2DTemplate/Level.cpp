@@ -43,7 +43,7 @@ void Level::Initialize(std::string  mapFilename,Player* p)
 			{
 				clipIndex = 1;
 				passable = true;
-				p->SetPosition(levelData.playerPos);
+				p->CoreData()->position = levelData.playerPos;
 			
 
 			}
@@ -133,29 +133,26 @@ void Level::DoSupported(Entity * ent)
 
 void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 {
-	Vec2i vel = Vec2f(Sign((int)ent->MoveData()->velocity.x), Sign((int)ent->MoveData()->velocity.y));
+	Vec2i vel = Vec2f(Sign((int)ent->CoreData()->velocity.x), Sign((int)ent->CoreData()->velocity.y));
 	RectF ent_Rect = ent->GetCollisionRect();
-	Vec2f pos = ent->GetPosition();
-	EntityStates states;
 	float px, py;
 
 	if (vel.x > 0 && vel.y > 0)
 	{
 		px = ent_Rect.right - tile_Rect.left;
 		py = ent_Rect.bottom - tile_Rect.top;
-		if (ent->MoveData()->velocity.y * px > ent->MoveData()->velocity.x * py)
+		if (ent->CoreData()->velocity.y * px > ent->CoreData()->velocity.x * py)
 		{
-			pos.y -= py;
-			ent->MoveData()->velocity.y = 0.0f;
-			ent->SetPosition(pos);
-			ent->SetState((states = EntityStates::idle));
+			ent->CoreData()->position.y -= py;
+			ent->CoreData()->velocity.y = 0.0f;
+			
+			ent->SetState( EntityStates::idle);
 		}
 		else
 		{
-			pos.x -= px;
-			ent->MoveData()->velocity.x = -(ent->MoveData()->velocity.x );
-			ent->SetPosition(pos);
-			ent->MoveData()->direction.Set(MOVE_LEFT);
+			ent->CoreData()->position.x -= px;
+			ent->CoreData()->velocity.x = -(ent->CoreData()->velocity.x );
+			ent->CoreData()->direction.Set(MOVE_LEFT);
 		}
 		return;
 	}
@@ -163,20 +160,19 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 	{
 		px = ent_Rect.right - tile_Rect.left;
 		py = tile_Rect.bottom - ent_Rect.top;
-		if ((-ent->MoveData()->velocity.y) * px > ent->MoveData()->velocity.x * py)
+		if ((-ent->CoreData()->velocity.y) * px > ent->CoreData()->velocity.x * py)
 		{
-			pos.y += py;
-			ent->MoveData()->velocity.y = 0.0f;
-			ent->SetPosition(pos);
+			ent->CoreData()->position.y += py;
+			ent->CoreData()->velocity.y = 0.0f;
+			
 		}
 		else
 		{
-			pos.x -= px;
-			ent->MoveData()->velocity.x = -(ent->MoveData()->velocity.x );
-			ent->SetPosition(pos);
-			ent->MoveData()->direction.Set(MOVE_LEFT);
+			ent->CoreData()->position.x -= px;
+			ent->CoreData()->velocity.x = -(ent->CoreData()->velocity.x );
+			ent->CoreData()->direction.Set(MOVE_LEFT);
 			if (vel.y == 0)
-				ent->SetState((states = EntityStates::idle));
+				ent->SetState(EntityStates::idle);
 			
 		}
 		return;
@@ -186,20 +182,17 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 	{
 		px = tile_Rect.right - ent_Rect.left;
 		py = ent_Rect.bottom - tile_Rect.top;
-		if (ent->MoveData()->velocity.y * px > (-ent->MoveData()->velocity.x) * py)
+		if (ent->CoreData()->velocity.y * px > (-ent->CoreData()->velocity.x) * py)
 		{
-			pos.y -= py;
-			ent->MoveData()->velocity.y = 0.0f;
-			ent->SetPosition(pos);
-			ent->SetState((states = EntityStates::idle));
+			ent->CoreData()->position.y -= py;
+			ent->CoreData()->velocity.y = 0.0f;
+			ent->SetState(EntityStates::idle);
 		}
 		else
 		{
-			pos.x += px;
-			ent->MoveData()->velocity.x = -(ent->MoveData()->velocity.x );
-
-			ent->SetPosition(pos);
-			ent->MoveData()->direction.Set(MOVE_RIGHT);
+			ent->CoreData()->position.x += px;
+			ent->CoreData()->velocity.x = -(ent->CoreData()->velocity.x );
+			ent->CoreData()->direction.Set(MOVE_RIGHT);
 			
 		}
 		return;
@@ -208,20 +201,19 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 	{
 		px = tile_Rect.right - ent_Rect.left;;
 		py = tile_Rect.bottom - ent_Rect.top;
-		if ((-ent->MoveData()->velocity.y) * px > (-ent->MoveData()->velocity.x) * py)
+		if ((-ent->CoreData()->velocity.y) * px > (-ent->CoreData()->velocity.x) * py)
 		{
-			pos.y += py;
-			ent->MoveData()->velocity.y = 0.0f;
-			ent->SetPosition(pos);
+			ent->CoreData()->position.y += py;
+			ent->CoreData()->velocity.y = 0.0f;
+		
 		}
 		else
 		{
-			pos.x += px;
-			ent->MoveData()->velocity.x = -(ent->MoveData()->velocity.x);
-			ent->SetPosition(pos);
-			ent->MoveData()->direction.Set(MOVE_RIGHT);
+			ent->CoreData()->position.x += px;
+			ent->CoreData()->velocity.x = -(ent->CoreData()->velocity.x);
+			ent->CoreData()->direction.Set(MOVE_RIGHT);
 			if(vel.y == 0)
-				ent->SetState((states = EntityStates::idle));
+				ent->SetState(EntityStates::idle);
 		}
 		return;
 	}

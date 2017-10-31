@@ -50,6 +50,7 @@ public:
 	int seq_Index = 0;
 	float seq_Timer = 0.0f;
 	Vec2f velocity = {0.0f,0.0f};
+	Vec2f position = {0.0f,0.0f};
 	_CoreData() {}
 };
 
@@ -66,10 +67,8 @@ public:
 	virtual void Update(const float& dt) = 0;
 	virtual RectF GetCollisionRect() { return RectF(); };
 	virtual RectF GetCollisionRect(Vec2f& offset_translation) { return RectF(); };
-	virtual void SetState(EntityStates& state) { m_currentState = state; };
-	virtual void SetPosition(Vec2f& pos) = 0;
-	virtual Vec2f GetPosition() = 0;
+	virtual void SetState(EntityStates state) { m_currentState = state; };
 	virtual Vec2f GetCenter() = 0;
-	_CoreData* MoveData() { return &m_coreData; }
+	_CoreData* CoreData() { return &m_coreData; }
 	
 };

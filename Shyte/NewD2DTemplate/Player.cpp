@@ -26,9 +26,12 @@ void Player::Update(const float & dt)
 {
 	
 	EntityState::DoState(m_currentState, m_coreData);
-	Vec2f pos = GetPosition() + m_coreData.velocity  * dt;
-	SetPosition(pos);
+	m_coreData.position += m_coreData.velocity  * dt;
 	m_renderDesc.clipRect = Locator::ImageManager()->GetImage("char1")->GetClippedImage(mp_seqPtr->at(m_coreData.seq_Index)).ToD2D();
+	m_renderDesc.drawRect = { m_coreData.position.x,m_coreData.position.y,
+		m_coreData.position.x + m_drawWidth,m_coreData.position.y + m_drawHeight };
+	m_center.x = m_renderDesc.drawRect.left + (m_drawWidth * 0.5f);
+	m_center.y = m_renderDesc.drawRect.top + (m_drawHeight * 0.5f);
 }
 
 RectF Player::GetCollisionRect()
@@ -51,17 +54,7 @@ RectF Player::GetCollisionRect(Vec2f& offset_translation)
 	return RectF(x,y,x+rect.GetWidth(),y + rect.GetHeight());
 }
 
-void Player::SetPosition(Vec2f & pos)
-{
-	m_renderDesc.drawRect = { pos.x,pos.y,pos.x + m_drawWidth,pos.y + m_drawHeight };
-	m_center.x = m_renderDesc.drawRect.left + (m_drawWidth * 0.5f);
-	m_center.y = m_renderDesc.drawRect.top + (m_drawHeight * 0.5f);
-}
 
-Vec2f Player::GetPosition()
-{
-	return Vec2f(m_renderDesc.drawRect.left, m_renderDesc.drawRect.top);
-}
 
 Vec2f Player::GetCenter()
 {

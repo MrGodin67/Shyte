@@ -22,8 +22,6 @@ public:
 	virtual void Update(const float & dt) override;
 	virtual RectF GetCollisionRect()override;
 	virtual RectF GetCollisionRect(Vec2f& offset_translation) override;
-	virtual void SetPosition(Vec2f & pos) override;
-	virtual Vec2f GetPosition() override;
 	virtual Vec2f GetCenter()override;
 	void HandleInput(Keyboard& kbd, Mouse& mouse);
 };

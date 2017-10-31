@@ -53,7 +53,7 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 		m_currLevel->DoCollision(m_player.get());
 		m_currLevel->DoSupported(m_player.get());
 		m_player->Update(deltaTime);
-		m_cam.UpdatePosition(m_player->GetPosition());
+		m_cam.UpdatePosition(m_player->CoreData()->position);
 	}
 	break;
 	}
@@ -121,17 +121,17 @@ void Game::CreatePlayer()
 	desc.clipRect = m_textureHandler->GetImage("char1")->GetClippedImage(4).ToD2D();
 	desc.image = m_textureHandler->GetImage("char1")->GetTexture();
 	m_player = std::make_unique<Player>(desc);
-	m_player->MoveData()->acceleration = 4.0f;
-	m_player->MoveData()->horizontalDecay = 0.987f;
-	m_player->MoveData()->maxSpeed = 152.0f;
-	m_player->MoveData()->surfaceFriction = 0.876f;
-	m_player->MoveData()->verticalForce = -400.0f;
+	m_player->CoreData()->acceleration = 4.0f;
+	m_player->CoreData()->horizontalDecay = 0.987f;
+	m_player->CoreData()->maxSpeed = 152.0f;
+	m_player->CoreData()->surfaceFriction = 0.876f;
+	m_player->CoreData()->verticalForce = -400.0f;
 }
 
 void Game::InitCamera()
 {
 	m_cam.ConfineToMap(RectF(0.0f, 0.0f, 20.0f*64.0f, 20.0f*64.0f));
-	m_cam.UpdatePosition(m_player->GetPosition());
+	m_cam.UpdatePosition(m_player->CoreData()->position);
 }
 
 void Game::InitMenus()
