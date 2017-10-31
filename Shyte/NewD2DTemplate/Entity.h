@@ -32,7 +32,7 @@ public:
 	void Set(int horz) { horizontal = horz; }
 	
 };
-class _MovementData
+class _CoreData
 {
 public:
 	_Direction direction;
@@ -50,17 +50,16 @@ public:
 	int seq_Index = 0;
 	float seq_Timer = 0.0f;
 	Vec2f velocity = {0.0f,0.0f};
-	_MovementData() {}
+	_CoreData() {}
 };
 
 
 class Entity : public Animation
 {
 protected:
-	Vec2f m_velocity = { 0.0f,0.0f };
-	float m_speed = 2.0f;
+	
 	EntityStates m_currentState = EntityStates::idle;
-	_MovementData m_movement;
+	_CoreData m_coreData;
 	
 public:
 	Entity();
@@ -71,6 +70,6 @@ public:
 	virtual void SetPosition(Vec2f& pos) = 0;
 	virtual Vec2f GetPosition() = 0;
 	virtual Vec2f GetCenter() = 0;
-	_MovementData* MoveData() { return &m_movement; }
+	_CoreData* MoveData() { return &m_coreData; }
 	
 };

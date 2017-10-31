@@ -11,7 +11,7 @@ private:
 		if (val > GRAVITY * 27.0f)
 			val = GRAVITY * 27.0f;
 	}
-	static void DoFalling(_MovementData& data)
+	static void DoFalling(_CoreData& data)
 	{
 		if (fabsf(data.velocity.x) < 1.5f)
 			data.velocity.x = 0.0f;
@@ -23,7 +23,7 @@ private:
 		}
 		ApplyGravity(data.velocity.y);
 	}
-	static void DoIdle(_MovementData& data)
+	static void DoIdle(_CoreData& data)
 	{
 		data.falling = data.jumping = data.climbing = false;
 		data.velocity.y = 0.0f;
@@ -39,7 +39,7 @@ private:
 		}
 		data.seq_Timer = 0;
 	}
-	static void DoMoving(_MovementData& data)
+	static void DoMoving(_CoreData& data)
 	{
 		data.moving = true;
 		if (Sign(data.velocity.x) != data.direction.GetSign())
@@ -65,7 +65,7 @@ private:
 	}
 public:
 	EntityState(){}
-	static void DoState(EntityStates& m_state,_MovementData& data)
+	static void DoState(EntityStates& m_state,_CoreData& data)
 	{
 		
 		switch (m_state)

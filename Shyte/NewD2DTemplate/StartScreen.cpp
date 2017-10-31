@@ -7,9 +7,12 @@
 StartScreen::StartScreen()
 {
 	Animation::RenderDesc desc;
-	desc.clipRect = { 0.0f,0.0f,256.0f,128.0f };
-	desc.drawRect = { 100.0f ,100.0f,356.0f,228.0f };
 	desc.image = Locator::ImageManager()->GetImage("start_screen")->GetTexture();
+	float x = (float)(Locator::ScreenWidth() / 2) - (float)(desc.image->GetSize().width / 2);
+	float y = (float)(Locator::ScreenHeight() / 2) - (float)(desc.image->GetSize().height / 2);
+	desc.clipRect = { 0.0f,0.0f,(float)desc.image->GetSize().width,(float)desc.image->GetSize().height };
+	desc.drawRect = { x/2 ,y/2,x + (float)desc.image->GetSize().width * 2,y + (float)desc.image->GetSize().height*2};
+	
 	m_images["main_image"] = std::make_unique<Animation>(desc);
 }
 

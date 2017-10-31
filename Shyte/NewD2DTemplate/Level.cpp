@@ -281,11 +281,10 @@ bool Level::GetTileCollisionRect(RectF & ent_Rect, RectF & out_rect)
 			
 			Tile* t = GetTile(index);
 			if (!t)continue;
-
+			collisionTiles.push_back(t);
 			if (!t->Passable())
 			{
 				out_rect = t->GetRenderDesc().drawRect;
-				collisionTiles.push_back(t);
 				return true;
 			}
 			

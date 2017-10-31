@@ -11,7 +11,7 @@ Game::Game(Direct3DWindow & wnd)
 		true, FULL_SCREEN,1000.0f,0.01f),
 	m_cam(&gfx,(float)wnd.ScreenWidth(), (float)wnd.ScreenHeight())
 {
-	
+	Locator::SetScreenDimensions(wnd.ScreenWidth(), wnd.ScreenHeight());
 	
 	ConstructLevelsFromTextFile("map001.txt");
 	ConstructLevelsFromTextFile("map002.txt");
@@ -40,16 +40,24 @@ bool Game::Play(const float& deltaTime)
 
 HRESULT Game::ConstructScene(const float& deltaTime)
 {
+	ToggleGameState();
+	switch (m_gameState)
+	{
+	case _GameState::running:
+	{
+		if (window.kbd.KeyIsPressed(VK_ESCAPE))
+			EndApp();
+
+		m_player->HandleInput(window.kbd, window.mouse);
+
+		m_currLevel->DoCollision(m_player.get());
+		m_currLevel->DoSupported(m_player.get());
+		m_player->Update(deltaTime);
+		m_cam.UpdatePosition(m_player->GetPosition());
+	}
+	break;
+	}
 	
-	if (window.kbd.KeyIsPressed(VK_ESCAPE))
-		EndApp();
-	
-	m_player->HandleInput(window.kbd, window.mouse);
-	
-	m_currLevel->DoCollision(m_player.get());
-	m_currLevel->DoSupported(m_player.get());
-	m_player->Update(deltaTime);
-	m_cam.UpdatePosition(m_player->GetPosition());
 	return S_OK;
 }
 
@@ -58,10 +66,24 @@ HRESULT Game::RenderScene()
 	HRESULT hr;
 	hr = gfx.BeginScene(0.2f, 0.4f, 0.2f, 1.0f);
 	if (FAILED(hr)) { return hr; }
-	m_currLevel->Draw(gfx);
-	m_cam.Rasterize(m_player->GetDrawable());
-	//m_currentMenu->Draw(m_cam);
+
+	switch (m_gameState)
+	{
+		case _GameState::running:
+		{
+			m_currLevel->Draw(gfx);
+			m_cam.Rasterize(m_player->GetDrawable());
+		}break;
+		case _GameState::paused:
+		{
+			m_currentMenu->Draw(m_cam);
+		}break;
+	};
+	
+	
 	//gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_player->GetCollisionRect(-m_cam.GetPos()).ToD2D(), D2D1::ColorF(1.0f,1.0f,1.0f,1.0f));;
+	
+	
 	hr = gfx.EndScene();
 	if (FAILED(hr)) { return hr; }
 	return hr;
@@ -189,6 +211,24 @@ void Game::ConstructLevelsFromTextFile(std::string mapFilename)
 	}
 	std::string f = "data\\levels\\" + fName + ".bin";
 	FileManager::WriteLevelData(f.c_str(), levelData);
+}
+
+void Game::ToggleGameState()
+{
+	static bool F1_click = false;
+	if (window.kbd.KeyIsPressed(VK_F1) && !F1_click)
+	{
+		switch (m_gameState)
+		{
+		case _GameState::running:
+			m_gameState = _GameState::paused;
+			break;
+		case _GameState::paused:
+			m_gameState = _GameState::running;
+			break;
+		}
+	}
+	F1_click = window.kbd.KeyIsPressed(VK_F1);
 }
 
 

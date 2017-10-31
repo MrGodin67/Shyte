@@ -25,10 +25,10 @@ Player::~Player()
 void Player::Update(const float & dt)
 {
 	
-	EntityState::DoState(m_currentState, m_movement);
-	Vec2f pos = GetPosition() + m_movement.velocity  * dt;
+	EntityState::DoState(m_currentState, m_coreData);
+	Vec2f pos = GetPosition() + m_coreData.velocity  * dt;
 	SetPosition(pos);
-	m_renderDesc.clipRect = Locator::ImageManager()->GetImage("char1")->GetClippedImage(mp_seqPtr->at(m_movement.seq_Index)).ToD2D();
+	m_renderDesc.clipRect = Locator::ImageManager()->GetImage("char1")->GetClippedImage(mp_seqPtr->at(m_coreData.seq_Index)).ToD2D();
 }
 
 RectF Player::GetCollisionRect()
@@ -76,15 +76,15 @@ void Player::HandleInput(Keyboard & kbd, Mouse & mouse)
 	m_currentState = EntityStates::idle;
 	if (kbd.KeyIsPressed(VK_RIGHT))
 	{
-		m_movement.direction.Set(MOVE_RIGHT);
+		m_coreData.direction.Set(MOVE_RIGHT);
 		m_currentState = EntityStates::moving;
-		m_movement.moving = true;
+		m_coreData.moving = true;
 		mp_seqPtr = &seq_Indices["right"];
 		
 	}
 	if (kbd.KeyIsPressed(VK_LEFT))
 	{
-		m_movement.direction.Set(MOVE_LEFT);
+		m_coreData.direction.Set(MOVE_LEFT);
 		m_currentState = EntityStates::moving;
 		mp_seqPtr = &seq_Indices["left"];
 		
@@ -97,11 +97,11 @@ void Player::HandleInput(Keyboard & kbd, Mouse & mouse)
 		
 	}
 	
-	if (kbd.KeyIsPressed(VK_SPACE) && !m_movement.jumping)
+	if (kbd.KeyIsPressed(VK_SPACE) && !m_coreData.jumping)
 	{
 		m_currentState = EntityStates::jumping;
-		m_movement.jumping = true;
-		m_movement.velocity.y = -400.0f;
+		m_coreData.jumping = true;
+		m_coreData.velocity.y = -400.0f;
 	}
 	
 	
