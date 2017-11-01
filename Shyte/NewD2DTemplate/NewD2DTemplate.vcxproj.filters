@@ -132,6 +132,12 @@
     <ClCompile Include="StartScreen.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="Button.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="NewGame.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameState.h">
@@ -255,6 +261,12 @@
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="StartScreen.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="NewGame.h">
       <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>

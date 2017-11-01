@@ -15,6 +15,7 @@
 #include "randomizer.h"
 #include "FileManager.h"
 #include "StartScreen.h"
+#include "NewGame.h"
 
 
 class Game
@@ -50,11 +51,12 @@ private:
 	
 	void LoadAudio();
 	void LoadImages();
-	void CreatePlayer();
+	void CreatePlayer(PlayerData* data);
 	void InitCamera();
 	void InitMenus();
 	void CreateLevel(std::string mapFilename);
 
 	void ConstructLevelsFromTextFile(std::string mapFilename);
 	void ToggleGameState();
+	void HandleUserInterface(Mouse::Event mouse_event);
 };

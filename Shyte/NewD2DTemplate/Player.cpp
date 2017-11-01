@@ -6,7 +6,8 @@ Player::Player()
 {
 }
 
-Player::Player(Animation::RenderDesc & desc)
+Player::Player(Animation::RenderDesc & desc, PlayerData data)
+	:data(data)
 {
 	m_drawWidth = desc.drawRect.right - desc.drawRect.left;
 	m_drawHeight = desc.drawRect.bottom - desc.drawRect.top;
@@ -27,7 +28,7 @@ void Player::Update(const float & dt)
 	
 	EntityState::DoState(m_currentState, m_coreData);
 	m_coreData.position += m_coreData.velocity  * dt;
-	m_renderDesc.clipRect = Locator::ImageManager()->GetImage("char1")->GetClippedImage(mp_seqPtr->at(m_coreData.seq_Index)).ToD2D();
+	m_renderDesc.clipRect = Locator::ImageManager()->GetImage(std::string(data.name))->GetClippedImage(mp_seqPtr->at(m_coreData.seq_Index)).ToD2D();
 	m_renderDesc.drawRect = { m_coreData.position.x,m_coreData.position.y,
 		m_coreData.position.x + m_drawWidth,m_coreData.position.y + m_drawHeight };
 	m_center.x = m_renderDesc.drawRect.left + (m_drawWidth * 0.5f);

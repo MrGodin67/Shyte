@@ -6,14 +6,14 @@
 
 StartScreen::StartScreen()
 {
-	Animation::RenderDesc desc;
-	desc.image = Locator::ImageManager()->GetImage("start_screen")->GetTexture();
-	float x = (float)(Locator::ScreenWidth() / 2) - (float)(desc.image->GetSize().width / 2);
-	float y = (float)(Locator::ScreenHeight() / 2) - (float)(desc.image->GetSize().height / 2);
-	desc.clipRect = { 0.0f,0.0f,(float)desc.image->GetSize().width,(float)desc.image->GetSize().height };
-	desc.drawRect = { x/2 ,y/2,x + (float)desc.image->GetSize().width * 2,y + (float)desc.image->GetSize().height*2};
 	
-	m_images["main_image"] = std::make_unique<Animation>(desc);
+	m_image = Locator::ImageManager()->GetImage("start_screen")->GetTexture();
+	float x = (float)(Locator::ScreenWidth() / 2) - (float)(m_image->GetSize().width / 2);
+	float y = (float)(Locator::ScreenHeight() / 2) - (float)(m_image->GetSize().height / 2);
+	m_frame = { x ,y,x + (float)m_image->GetSize().width ,y + (float)m_image->GetSize().height};
+	
+	m_buttons[0] = { x+16.0f,y+16.0f * 6.0f,x+16.0f* 5.0f,y+16.0f * 7.0f };
+	m_buttons[1] = { x+16.0f*11.0f,y+16.0f * 6.0f,x+16.0f* 15.0f,y+16.0f * 7.0f };
 }
 
 StartScreen::~StartScreen()
@@ -22,49 +22,24 @@ StartScreen::~StartScreen()
 
 MouseReturnType StartScreen::OnMouseClick(const Vec2i & mousePos)
 {
-	return MouseReturnType();
+	MouseReturnType type;
+	if (m_buttons[0].Contains(mousePos))
+		type.type = RETURN_START;
+
+	if (m_buttons[1].Contains(mousePos))
+		type.type = RETURN_NEW;
+
+	return type;
 }
 
 void StartScreen::OnKeyPress(unsigned char & key)
 {
 }
 
-void StartScreen::Draw(Camera & cam)
+void StartScreen::Draw(Graphics& gfx)
 {
-	for (auto& it : m_images)
-		cam.Rasterize(it.second->GetDrawable());
-
-	cam.Rasterize(GetDrawable());
+	gfx.DrawSprite(D2D1::Matrix3x2F::Identity(), m_frame.ToD2D(), m_image);
+	gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[0].ToD2D(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f));
+	gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[1].ToD2D(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f));
 }
 
-StartScreen::Drawable::Drawable(StartScreen& p)
-	:
-	m_parent(p)
-
-{
-	matTrans = D2D1::Matrix3x2F::Identity();
-	matRot = D2D1::Matrix3x2F::Identity();
-	matScale = D2D1::Matrix3x2F::Identity();
-
-
-}
-
-StartScreen::Drawable StartScreen::GetDrawable()
-{
-	return Drawable(*this);
-}
-
-void StartScreen::Drawable::Rasterize(Graphics& gfx)
-{
-	
-	
-}
-void StartScreen::Drawable::Transform(const D2D1::Matrix3x2F& mat)
-{
-	
-}
-void StartScreen::Drawable::TranslateCoords(const Vec2f &pos)
-{
-	matTrans = D2D1::Matrix3x2F::Translation({ pos.x, pos.y });
-
-}

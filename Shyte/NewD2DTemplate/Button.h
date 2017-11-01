@@ -1,23 +1,16 @@
 #pragma once
-
 #include "UserInterface.h"
 
-class StartScreen : public UserInterface
+class Button : public UserInterface
 {
 	RectF m_frame;
 	ID2D1Bitmap* m_image;
-	RectF m_buttons[2];
+	MouseReturnType m_returnType;
 public:
-
-	StartScreen();
-
-	~StartScreen();
+	Button() = default;
+	Button(RectF frame, ID2D1Bitmap* image,int returnValue);
 	// Inherited via UserInterface
 	virtual MouseReturnType OnMouseClick(const Vec2i & mousePos) override;
-
 	virtual void OnKeyPress(unsigned char & key) override;
-
-	virtual void Draw(class Graphics& gfx) override;
-	
-
+	virtual void Draw(Graphics & gfx) override;
 };

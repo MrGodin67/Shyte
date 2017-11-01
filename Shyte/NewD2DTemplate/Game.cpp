@@ -16,11 +16,11 @@ Game::Game(Direct3DWindow & wnd)
 	ConstructLevelsFromTextFile("map001.txt");
 	ConstructLevelsFromTextFile("map002.txt");
 	LoadImages();
-	CreatePlayer();
+	//CreatePlayer();
 	InitCamera();
 	InitMenus();
 	//CreateLevel("data\\levels\\map001.bin");
-	CreateLevel("data\\levels\\map002.bin");
+	
 	
 }
 
@@ -41,6 +41,8 @@ bool Game::Play(const float& deltaTime)
 HRESULT Game::ConstructScene(const float& deltaTime)
 {
 	ToggleGameState();
+	Mouse::Event mouse_event = window.mouse.Read();
+	
 	switch (m_gameState)
 	{
 	case _GameState::running:
@@ -54,6 +56,11 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 		m_currLevel->DoSupported(m_player.get());
 		m_player->Update(deltaTime);
 		m_cam.UpdatePosition(m_player->CoreData()->position);
+	}
+	break;
+	case _GameState::paused:
+	{
+		HandleUserInterface(mouse_event);
 	}
 	break;
 	}
@@ -76,7 +83,7 @@ HRESULT Game::RenderScene()
 		}break;
 		case _GameState::paused:
 		{
-			m_currentMenu->Draw(m_cam);
+			m_currentMenu->Draw(gfx);
 		}break;
 	};
 	
@@ -106,37 +113,44 @@ void Game::LoadImages()
 {
 	m_textureHandler = std::make_unique<TextureManager>();
 	std::vector<TextureManager::ImageData> data;
-	data.emplace_back("char1", L"assets\\char1.png", 24.0f, 32.0f);
-	data.emplace_back("char2", L"assets\\char2.png", 24.0f, 32.0f);
+	data.emplace_back("colin", L"assets\\colin.png", 24.0f, 32.0f);
+	data.emplace_back("jack", L"assets\\jack.png", 24.0f, 32.0f);
+	data.emplace_back("maria", L"assets\\maria.png", 24.0f, 32.0f);
+	data.emplace_back("hannah", L"assets\\hannah.png", 24.0f, 32.0f);
 	data.emplace_back("level1", L"assets\\level1.png", 64.0f, 64.0f);
 	data.emplace_back("start_screen", L"assets\\startscreen.png", 48.0f, 16.0f);
+	data.emplace_back("new_game", L"assets\\new_game.png", 512.0f, 512.0f);
 	m_textureHandler->LoadImages(data);
 	Locator::SetImageManager(m_textureHandler.get());
 }
 
-void Game::CreatePlayer()
+void Game::CreatePlayer(PlayerData* data)
 {
 	Animation::RenderDesc desc;
+	
+	
 	desc.drawRect = { 0.0f,0.0f,48.0f,64.0f };
-	desc.clipRect = m_textureHandler->GetImage("char1")->GetClippedImage(4).ToD2D();
-	desc.image = m_textureHandler->GetImage("char1")->GetTexture();
-	m_player = std::make_unique<Player>(desc);
+	desc.clipRect = m_textureHandler->GetImage(std::string(data->name))->GetClippedImage(4).ToD2D();
+	desc.image = m_textureHandler->GetImage(std::string(data->name))->GetTexture();
+	m_player = std::make_unique<Player>(desc,*data);
 	m_player->CoreData()->acceleration = 4.0f;
 	m_player->CoreData()->horizontalDecay = 0.987f;
 	m_player->CoreData()->maxSpeed = 152.0f;
 	m_player->CoreData()->surfaceFriction = 0.876f;
 	m_player->CoreData()->verticalForce = -400.0f;
+	CreateLevel("data\\levels\\map002.bin");
 }
 
 void Game::InitCamera()
 {
 	m_cam.ConfineToMap(RectF(0.0f, 0.0f, 20.0f*64.0f, 20.0f*64.0f));
-	m_cam.UpdatePosition(m_player->CoreData()->position);
+	//m_cam.UpdatePosition(m_player->CoreData()->position);
 }
 
 void Game::InitMenus()
 {
 	m_menus["start_screen"] = std::make_unique<StartScreen>();
+	m_menus["new_game"] = std::make_unique<NewGame>();
 	m_currentMenu = m_menus["start_screen"].get();
 }
 
@@ -229,6 +243,37 @@ void Game::ToggleGameState()
 		}
 	}
 	F1_click = window.kbd.KeyIsPressed(VK_F1);
+}
+
+void Game::HandleUserInterface(Mouse::Event mouse_event)
+{
+	MouseReturnType result;
+	if (mouse_event.LeftIsPressed() && m_currentMenu)
+	{
+		result = m_currentMenu->OnMouseClick({ window.mouse.GetPosX(),window.mouse.GetPosY() });
+		switch (result.type)
+		{
+		case RETURN_START:
+			m_gameState = _GameState::running;
+			break;
+		case RETURN_EXIT:
+			EndApp();
+			break;
+		case RETURN_NEW:
+			m_currentMenu = m_menus["new_game"].get();
+			break;
+		case RETURN_NEW_DONE:
+		{
+			PlayerData* data = (PlayerData*)result.data;
+			CreatePlayer(data);
+			m_gameState = _GameState::running;
+
+		}
+			break;
+		}
+		
+			
+	}
 }
 
 

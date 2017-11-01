@@ -3,6 +3,15 @@
 #include "keyboard.h"
 #include "mouse.h"
 #include "EntityState.h"
+struct PlayerData
+{
+	char name[255];
+	int hit_points;
+	int current_level;
+	int numbPotions;
+	int numbKeys;
+	int exp_points;
+};
 class Player :
 	public Entity
 {
@@ -12,10 +21,11 @@ class Player :
 	int seq_Index = 0;
 	std::array<int, 4>* mp_seqPtr;
 	float timer = 0.0f;
+	PlayerData data;
 	
 public:
 	Player();
-	Player(Animation::RenderDesc& desc);
+	Player(Animation::RenderDesc& desc,PlayerData data);
 	~Player();
 
 	// Inherited via Entity
