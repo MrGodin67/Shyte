@@ -254,7 +254,7 @@ void Game::HandleUserInterface(Mouse::Event mouse_event)
 		switch (result.type)
 		{
 		case RETURN_START:
-			m_gameState = _GameState::running;
+			
 			break;
 		case RETURN_EXIT:
 			EndApp();
