@@ -269,6 +269,9 @@
     <ClInclude Include="NewGame.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="coredata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="map001.txt">

@@ -43,7 +43,13 @@
 
 typedef std::vector<std::string> stringList;
 
-
+template<typename T>
+static T Sign(T val)
+{
+	if (val == (T)0)
+		return (T)0;
+	return std::signbit((float)val) ? (T)-1 : (T)1;
+}
 template<class Interface>
 inline void SafeRelease(Interface **ppInterfaceToRelease)
 {

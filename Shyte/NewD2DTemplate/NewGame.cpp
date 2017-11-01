@@ -53,13 +53,11 @@ void NewGame::Draw(Graphics & gfx)
 	gfx.DrawSprite(D2D1::Matrix3x2F::Identity(), m_frame.ToD2D(), m_image);
 	gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[0].ToD2D(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f));
 	if (m_selectedPlayer)
+	{
 		gfx.DrawFilledScreenRectangle(m_buttons[1].ToD2D(), D2D1::ColorF(1.0f, 0.0f, 0.0f, 0.5f));
-	
-		if (m_selectedPlayer)
-		{
-			gfx.DrawFilledScreenRectangle(m_selectedPlayer->frame.ToD2D(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 0.4f));
-			
-		}
+		gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[1].ToD2D(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f));
+		gfx.DrawFilledScreenRectangle(m_selectedPlayer->frame.ToD2D(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 0.4f));
+	}
 	
 }
 

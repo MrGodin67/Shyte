@@ -181,6 +181,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ChiliException.h" />
     <ClInclude Include="ChiliWin.h" />
+    <ClInclude Include="coredata.h" />
     <ClInclude Include="D2D1Texture.h" />
     <ClInclude Include="Direct3DWindow.h" />
     <ClInclude Include="Direct3D_2D.h" />

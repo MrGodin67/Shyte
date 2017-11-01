@@ -16,6 +16,7 @@
 #include "FileManager.h"
 #include "StartScreen.h"
 #include "NewGame.h"
+#include "coredata.h"
 
 
 class Game
@@ -57,6 +58,6 @@ private:
 	void CreateLevel(std::string mapFilename);
 
 	void ConstructLevelsFromTextFile(std::string mapFilename);
-	void ToggleGameState();
+	
 	void HandleUserInterface(Mouse::Event mouse_event);
 };

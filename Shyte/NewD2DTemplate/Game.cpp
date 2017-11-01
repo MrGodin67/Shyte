@@ -40,7 +40,7 @@ bool Game::Play(const float& deltaTime)
 
 HRESULT Game::ConstructScene(const float& deltaTime)
 {
-	ToggleGameState();
+	
 	Mouse::Event mouse_event = window.mouse.Read();
 	
 	switch (m_gameState)
@@ -55,7 +55,7 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 		m_currLevel->DoCollision(m_player.get());
 		m_currLevel->DoSupported(m_player.get());
 		m_player->Update(deltaTime);
-		m_cam.UpdatePosition(m_player->CoreData()->position);
+		m_cam.UpdatePosition(m_player->GetPosition());
 	}
 	break;
 	case _GameState::paused:
@@ -132,12 +132,8 @@ void Game::CreatePlayer(PlayerData* data)
 	desc.drawRect = { 0.0f,0.0f,48.0f,64.0f };
 	desc.clipRect = m_textureHandler->GetImage(std::string(data->name))->GetClippedImage(4).ToD2D();
 	desc.image = m_textureHandler->GetImage(std::string(data->name))->GetTexture();
-	m_player = std::make_unique<Player>(desc,*data);
-	m_player->CoreData()->acceleration = 4.0f;
-	m_player->CoreData()->horizontalDecay = 0.987f;
-	m_player->CoreData()->maxSpeed = 152.0f;
-	m_player->CoreData()->surfaceFriction = 0.876f;
-	m_player->CoreData()->verticalForce = -400.0f;
+	m_player = std::make_unique<Player>(desc,*data, InitialPlayerCoreData::Get(std::string(data->name)));
+	
 	CreateLevel("data\\levels\\map002.bin");
 }
 
@@ -227,30 +223,14 @@ void Game::ConstructLevelsFromTextFile(std::string mapFilename)
 	FileManager::WriteLevelData(f.c_str(), levelData);
 }
 
-void Game::ToggleGameState()
-{
-	static bool F1_click = false;
-	if (window.kbd.KeyIsPressed(VK_F1) && !F1_click)
-	{
-		switch (m_gameState)
-		{
-		case _GameState::running:
-			m_gameState = _GameState::paused;
-			break;
-		case _GameState::paused:
-			m_gameState = _GameState::running;
-			break;
-		}
-	}
-	F1_click = window.kbd.KeyIsPressed(VK_F1);
-}
+
 
 void Game::HandleUserInterface(Mouse::Event mouse_event)
 {
 	MouseReturnType result;
 	if (mouse_event.LeftIsPressed() && m_currentMenu)
 	{
-		result = m_currentMenu->OnMouseClick({ window.mouse.GetPosX(),window.mouse.GetPosY() });
+		result = m_currentMenu->OnMouseClick({ mouse_event.GetPosX(),mouse_event.GetPosY() });
 		switch (result.type)
 		{
 		case RETURN_START:

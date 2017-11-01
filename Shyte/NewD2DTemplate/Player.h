@@ -25,7 +25,7 @@ class Player :
 	
 public:
 	Player();
-	Player(Animation::RenderDesc& desc,PlayerData data);
+	Player(Animation::RenderDesc& desc,PlayerData data,_CoreData core);
 	~Player();
 
 	// Inherited via Entity
@@ -33,6 +33,7 @@ public:
 	virtual RectF GetCollisionRect()override;
 	virtual RectF GetCollisionRect(Vec2f& offset_translation) override;
 	virtual Vec2f GetCenter()override;
+
 	void HandleInput(Keyboard& kbd, Mouse& mouse);
 };
 

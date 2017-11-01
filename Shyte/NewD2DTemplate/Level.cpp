@@ -136,7 +136,7 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 	Vec2i vel = Vec2f(Sign((int)ent->CoreData()->velocity.x), Sign((int)ent->CoreData()->velocity.y));
 	RectF ent_Rect = ent->GetCollisionRect();
 	float px, py;
-
+	ent->CoreData()->boosting = false;
 	if (vel.x > 0 && vel.y > 0)
 	{
 		px = ent_Rect.right - tile_Rect.left;
@@ -151,7 +151,7 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 		else
 		{
 			ent->CoreData()->position.x -= px;
-			ent->CoreData()->velocity.x = -(ent->CoreData()->velocity.x );
+			ent->CoreData()->velocity.x = -(ent->CoreData()->velocity.x )* 0.5f;
 			ent->CoreData()->direction.Set(MOVE_LEFT);
 		}
 		return;
@@ -169,10 +169,9 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 		else
 		{
 			ent->CoreData()->position.x -= px;
-			ent->CoreData()->velocity.x = -(ent->CoreData()->velocity.x );
+			ent->CoreData()->velocity.x = -(ent->CoreData()->velocity.x )* 0.5f;
 			ent->CoreData()->direction.Set(MOVE_LEFT);
-			if (vel.y == 0)
-				ent->SetState(EntityStates::idle);
+			
 			
 		}
 		return;
@@ -191,7 +190,7 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 		else
 		{
 			ent->CoreData()->position.x += px;
-			ent->CoreData()->velocity.x = -(ent->CoreData()->velocity.x );
+			ent->CoreData()->velocity.x = -(ent->CoreData()->velocity.x )* 0.5f;
 			ent->CoreData()->direction.Set(MOVE_RIGHT);
 			
 		}
@@ -205,15 +204,15 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 		{
 			ent->CoreData()->position.y += py;
 			ent->CoreData()->velocity.y = 0.0f;
-		
+			
+
 		}
 		else
 		{
 			ent->CoreData()->position.x += px;
-			ent->CoreData()->velocity.x = -(ent->CoreData()->velocity.x);
+			ent->CoreData()->velocity.x = -(ent->CoreData()->velocity.x) * 0.5f;
 			ent->CoreData()->direction.Set(MOVE_RIGHT);
-			if(vel.y == 0)
-				ent->SetState(EntityStates::idle);
+			
 		}
 		return;
 	}

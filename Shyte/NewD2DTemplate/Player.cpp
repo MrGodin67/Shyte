@@ -6,9 +6,10 @@ Player::Player()
 {
 }
 
-Player::Player(Animation::RenderDesc & desc, PlayerData data)
+Player::Player(Animation::RenderDesc & desc, PlayerData data, _CoreData core)
 	:data(data)
 {
+	m_coreData = core;
 	m_drawWidth = desc.drawRect.right - desc.drawRect.left;
 	m_drawHeight = desc.drawRect.bottom - desc.drawRect.top;
 	m_renderDesc = desc;
@@ -50,9 +51,10 @@ RectF Player::GetCollisionRect(Vec2f& offset_translation)
 	rect.left += collision_clip_x;
 	rect.right -= collision_clip_x;
 	rect.top += collision_clip_y;
+	
 	float x = rect.left + offset_translation.x;
 	float y = rect.top + offset_translation.y;
-	return RectF(x,y,x+rect.GetWidth(),y + rect.GetHeight());
+	return  RectF(x, y, x + rect.GetWidth(), y + rect.GetHeight());
 }
 
 
@@ -65,7 +67,7 @@ Vec2f Player::GetCenter()
 void Player::HandleInput(Keyboard & kbd, Mouse & mouse)
 {
 	Vec2f vel = { 0.0f,0.0f };
-	
+	static bool is_boosting = false;
 	
 	m_currentState = EntityStates::idle;
 	if (kbd.KeyIsPressed(VK_RIGHT))
@@ -90,12 +92,21 @@ void Player::HandleInput(Keyboard & kbd, Mouse & mouse)
 		m_currentState = EntityStates::jumping;
 		
 	}
-	
-	if (kbd.KeyIsPressed(VK_SPACE) && !m_coreData.jumping)
+	 
+	if (kbd.KeyIsPressed(VK_SPACE))
 	{
-		m_currentState = EntityStates::jumping;
-		m_coreData.jumping = true;
-		m_coreData.velocity.y = -400.0f;
+		if (!m_coreData.jumping)
+		{
+			m_currentState = EntityStates::jumping;
+			m_coreData.jumping = true;
+			m_coreData.velocity.y = -20.1f;
+			m_coreData.boosting = true;
+		}
+		
+	}
+	else
+	{
+		m_coreData.boosting = false;
 	}
 	
 	
