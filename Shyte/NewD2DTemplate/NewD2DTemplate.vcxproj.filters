@@ -138,6 +138,12 @@
     <ClCompile Include="NewGame.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="PausedScreen.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="FileManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameState.h">
@@ -271,6 +277,9 @@
     </ClInclude>
     <ClInclude Include="coredata.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PausedScreen.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

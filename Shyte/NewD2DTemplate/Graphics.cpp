@@ -51,6 +51,18 @@ HRESULT Graphics::EndScene()
 	}
 	return hr;
 }
+void Graphics::DrawFilledEllipse(D2D1_MATRIX_3X2_F & matTrans, D2D1_ELLIPSE& data, D2D1_COLOR_F& color)
+{
+	m_pD2DWhiteBrush->SetColor({ color.r,color.g,color.b,color.a });
+	m_pD2DRenderTarget->SetTransform(matTrans);
+	m_pD2DRenderTarget->FillEllipse(data, m_pD2DWhiteBrush);
+}
+void Graphics::DrawEllipse(D2D1_MATRIX_3X2_F & matTrans, D2D1_ELLIPSE & data, D2D1_COLOR_F & color)
+{
+	m_pD2DWhiteBrush->SetColor({ color.r,color.g,color.b,color.a });
+	m_pD2DRenderTarget->SetTransform(matTrans);
+	m_pD2DRenderTarget->DrawEllipse(data, m_pD2DWhiteBrush);
+}
 void Graphics::DrawTriangle(D2D1_MATRIX_3X2_F &matTrans, D2D1_POINT_2F points[], D2D1_COLOR_F& color, float line_width)
 {
 	for (int i = 0; i < 3; i++)

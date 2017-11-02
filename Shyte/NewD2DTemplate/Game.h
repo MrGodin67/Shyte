@@ -17,6 +17,7 @@
 #include "StartScreen.h"
 #include "NewGame.h"
 #include "coredata.h"
+#include "PausedScreen.h"
 
 
 class Game
@@ -27,7 +28,7 @@ class Game
 	void EndApp();
 	Camera m_cam;
 	
-	_GameState m_gameState = _GameState::paused;
+	_GameState m_gameState = _GameState::main;
 private:
 	std::unique_ptr<SoundManager> m_soundFX;
 	std::unique_ptr<TextureManager> m_textureHandler;
@@ -36,6 +37,13 @@ private:
 
 	std::unordered_map<std::string, std::unique_ptr<UserInterface>> m_menus;
 	UserInterface* m_currentMenu = nullptr;
+	UserInterface* m_previousMenu = nullptr;
+	RectF m_currentBackgroundColor;
+	RectF m_backgroundColors[2] =
+	{
+		RectF(0.0f,0.0f,0.0f,1.0f),
+		RectF(0.2f,0.4f,0.2f,1.0f)
+	};
 	
 public:
 	Game(class Direct3DWindow& wnd);
@@ -56,8 +64,7 @@ private:
 	void InitCamera();
 	void InitMenus();
 	void CreateLevel(std::string mapFilename);
-
 	void ConstructLevelsFromTextFile(std::string mapFilename);
-	
 	void HandleUserInterface(Mouse::Event mouse_event);
+	void DrawLight();
 };

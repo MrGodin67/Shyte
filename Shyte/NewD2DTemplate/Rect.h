@@ -68,7 +68,7 @@ public:
 	template < typename T2 >
 	inline	operator Rect< T2 >() const
 	{
-		return{ (T2)top,(T2)bottom,(T2)left,(T2)right };
+		return{ (T2)left,(T2)top,(T2)right,(T2)bottom };
 	}
 	inline	void ClipTo(const Rect& rect)
 	{
@@ -100,10 +100,20 @@ public:
 		return D2D1::RectF((float)left, (float)top, (float)right, (float)bottom);
 	}
 public:
-	T top;
-	T bottom;
-	T left;
-	T right;
+	union {
+		struct {
+			T left;
+			T top;
+			T right;
+			T bottom;
+		};
+		struct {
+			T r;
+			T g;
+			T b;
+			T a;
+		};
+	};
 };
 
 typedef Rect< int > RectI;

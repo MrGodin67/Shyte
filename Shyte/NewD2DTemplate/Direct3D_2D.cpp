@@ -326,12 +326,12 @@ HRESULT Direct3D::InvokeDevices()
 void Direct3D::InvokeViewportMatrices()
 {
 
-	m_Viewport.Width = (float)m_screenWidth - 20;
-	m_Viewport.Height = (float)m_screenHeight  - 20;
+	m_Viewport.Width = (float)m_screenWidth ;
+	m_Viewport.Height = (float)m_screenHeight;
 	m_Viewport.MinDepth = 0.0f;
 	m_Viewport.MaxDepth = 1.0f;
-	m_Viewport.TopLeftX = 120.0f;
-	m_Viewport.TopLeftY = 120.0f;
+	m_Viewport.TopLeftX = 0.0f;
+	m_Viewport.TopLeftY = 0.0f;
 
 	// Create the viewport.
 	m_pImmediateContext->RSSetViewports(1, &m_Viewport);
@@ -446,7 +446,8 @@ HRESULT Direct3D::InvokeD2DDeviceResources()
 		result = m_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&backBufferSurface));
 
 		// DXGI_FORMAT_UNKNOWN will cause it to use the same format as the back buffer (R8G8B8A8_UNORM)
-		D2D1_RENDER_TARGET_PROPERTIES d2dRTProps = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED), 0, 0);
+		D2D1_RENDER_TARGET_PROPERTIES d2dRTProps = D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT, 
+			D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED), 0, 0);
 
 		// Wraps up our DXGI surface in a D2D render target.
 		result = m_pD2DFactory->CreateDxgiSurfaceRenderTarget(backBufferSurface.Get(), &d2dRTProps, &m_pD2DRenderTarget);

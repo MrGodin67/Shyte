@@ -4,6 +4,7 @@
 #include "Rect.h"
 #include "Animation.h"
 #include "RenderTarget.h"
+#include "randomizer.h"
 class Graphics : public Direct3D,public RenderTarget
 {
 private:
@@ -15,6 +16,8 @@ public:
 
 	HRESULT BeginScene(float red, float green, float blue, float alpha);
 	HRESULT EndScene();
+	void DrawFilledEllipse(D2D1_MATRIX_3X2_F & matTrans,D2D1_ELLIPSE& data, D2D1_COLOR_F& color);
+	void DrawEllipse(D2D1_MATRIX_3X2_F & matTrans, D2D1_ELLIPSE& data, D2D1_COLOR_F& color);
 	void DrawTriangle(D2D1_MATRIX_3X2_F &matTrans, D2D1_POINT_2F points[], D2D1_COLOR_F& color, float line_width);
 	void DrawLine(D2D1_MATRIX_3X2_F &matTrans, D2D1_POINT_2F start, D2D1_POINT_2F end, D2D1_COLOR_F& color, float width);
 	void DrawRectangle(D2D1_MATRIX_3X2_F &matTrans, D2D1_RECT_F& rect, D2D1_COLOR_F& color);

@@ -25,20 +25,7 @@ class FileManager
 {
 public:
 	FileManager() = default;
-	static void WriteLevelData(const char* filename, _LevelFileData& data)
-	{
-		FILE* file;
-		fopen_s(&file,filename, "wb");
-		assert(file);
-		fwrite(&data, sizeof(_LevelFileData),1, file);
-		fclose(file);
-	};
-	static void ReadLevelData(const char* filename, _LevelFileData& data)
-	{
-		FILE* file;
-		fopen_s(&file,filename, "rb");
-		assert(file);
-		fread(&data, sizeof(_LevelFileData), 1, file);
-		fclose(file);
-	};
+	static void WriteLevelData(const char* filename, _LevelFileData& data);
+	static void ReadLevelData(const char* filename, _LevelFileData& data);
+	static void WritePlayerData(const char* filename, PlayerData& data);
 };

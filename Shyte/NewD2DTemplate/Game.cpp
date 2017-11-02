@@ -20,7 +20,7 @@ Game::Game(Direct3DWindow & wnd)
 	InitCamera();
 	InitMenus();
 	//CreateLevel("data\\levels\\map001.bin");
-	
+	m_currentBackgroundColor = m_backgroundColors[0];
 	
 }
 
@@ -47,8 +47,14 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	{
 	case _GameState::running:
 	{
+		m_currentBackgroundColor = m_backgroundColors[1];
 		if (window.kbd.KeyIsPressed(VK_ESCAPE))
-			EndApp();
+		{
+			m_currentMenu = m_menus["paused_screen"].get();
+			m_previousMenu = nullptr;
+			m_gameState = _GameState::paused;
+			return S_OK;
+		}
 
 		m_player->HandleInput(window.kbd, window.mouse);
 
@@ -59,8 +65,10 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 		m_currLevel->Update(deltaTime);
 	}
 	break;
+	case _GameState::main:
 	case _GameState::paused:
 	{
+		m_currentBackgroundColor = m_backgroundColors[0];
 		HandleUserInterface(mouse_event);
 	}
 	break;
@@ -72,17 +80,28 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 HRESULT Game::RenderScene()
 {
 	HRESULT hr;
-	hr = gfx.BeginScene(0.2f, 0.4f, 0.2f, 1.0f);
+	hr = gfx.BeginScene(m_currentBackgroundColor.r, m_currentBackgroundColor.g, m_currentBackgroundColor.b, m_currentBackgroundColor.a);
 	if (FAILED(hr)) { return hr; }
 
 	switch (m_gameState)
 	{
+		case _GameState::paused:
+		{
+			m_currLevel->Draw(gfx);
+			m_cam.Rasterize(m_player->GetDrawable());
+			DrawLight();
+			m_currentMenu->Draw(gfx);
+		}
+		break;
 		case _GameState::running:
 		{
 			m_currLevel->Draw(gfx);
 			m_cam.Rasterize(m_player->GetDrawable());
+		
+			
+			DrawLight();
 		}break;
-		case _GameState::paused:
+		case _GameState::main:
 		{
 			m_currentMenu->Draw(gfx);
 		}break;
@@ -120,7 +139,9 @@ void Game::LoadImages()
 	data.emplace_back("hannah", L"assets\\hannah.png", 24.0f, 32.0f);
 	data.emplace_back("level1", L"assets\\level1.png", 64.0f, 64.0f);
 	data.emplace_back("start_screen", L"assets\\startscreen.png", 48.0f, 16.0f);
+	data.emplace_back("paused_screen", L"assets\\pausedscreen.png", 48.0f, 16.0f);
 	data.emplace_back("new_game", L"assets\\new_game.png", 512.0f, 512.0f);
+	data.emplace_back("light", L"assets\\light.png", 512.0f, 512.0f);
 	m_textureHandler->LoadImages(data);
 	Locator::SetImageManager(m_textureHandler.get());
 }
@@ -141,12 +162,13 @@ void Game::CreatePlayer(PlayerData* data)
 void Game::InitCamera()
 {
 	m_cam.ConfineToMap(RectF(0.0f, 0.0f, 20.0f*64.0f, 20.0f*64.0f));
-	//m_cam.UpdatePosition(m_player->CoreData()->position);
+	
 }
 
 void Game::InitMenus()
 {
 	m_menus["start_screen"] = std::make_unique<StartScreen>();
+	m_menus["paused_screen"] = std::make_unique<PausedScreen>();
 	m_menus["new_game"] = std::make_unique<NewGame>();
 	m_currentMenu = m_menus["start_screen"].get();
 }
@@ -229,18 +251,34 @@ void Game::ConstructLevelsFromTextFile(std::string mapFilename)
 void Game::HandleUserInterface(Mouse::Event mouse_event)
 {
 	MouseReturnType result;
-	if (mouse_event.LeftIsPressed() && m_currentMenu)
+	if (!m_currentMenu)
+		return;
+	if (mouse_event.LeftIsPressed())
 	{
+	
 		result = m_currentMenu->OnMouseClick({ mouse_event.GetPosX(),mouse_event.GetPosY() });
 		switch (result.type)
 		{
-		case RETURN_START:
-			
+		case RETURN_NEW_BACK:
+			if (m_previousMenu != nullptr)
+			{
+				m_currentMenu = m_previousMenu;
+				m_previousMenu = nullptr;
+			}
+		case RETURN_RESUME:
+		{
+			if (m_player.get())
+			{
+				m_gameState = _GameState::running;
+				m_currentMenu = m_previousMenu = nullptr;
+			}
+		}
 			break;
 		case RETURN_EXIT:
 			EndApp();
 			break;
 		case RETURN_NEW:
+			m_previousMenu = m_currentMenu;
 			m_currentMenu = m_menus["new_game"].get();
 			break;
 		case RETURN_NEW_DONE:
@@ -254,6 +292,27 @@ void Game::HandleUserInterface(Mouse::Event mouse_event)
 		}
 		
 			
+	}
+	else
+	{
+		m_currentMenu->OnMouseMove({ window.mouse.GetPos().first,window.mouse.GetPos().second });
+	}
+}
+
+void Game::DrawLight()
+{
+	Vec2f position = m_player->GetCenter() + -m_cam.GetPosition();
+	D2D1_ELLIPSE e;
+	e.point = { position.x,position.y };
+	e.radiusX = 100.0f;
+	e.radiusY = 100.0f;
+	float diffuse = 0.0f;
+	for (float c = 100.0f; c > 0.0f; c -= 1.0f)
+	{
+		e.radiusX = c;
+		e.radiusY = c;
+		float diffuse = c * 0.01f;
+		gfx.DrawEllipse(D2D1::Matrix3x2F::Identity(), e, D2D1::ColorF(1.0f, 1.0f, 1.0f,diffuse));
 	}
 }
 
