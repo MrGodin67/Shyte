@@ -9,9 +9,9 @@ class Level
 private:
 	std::vector<std::unique_ptr<Tile>> m_tiles;
 	Camera& m_cam;
-	_LevelFileData levelData;
-	std::vector<Tile*> collisionTiles;
-	std::vector<Tile*> m_renderTiles;
+	_LevelFileData m_currentLevelData;
+	Vec2i m_startDrawIndex;
+	Vec2i m_endDrawIndex;
 	void CorrectCollision(Entity* ent, RectF tile_Rect);
 	Tile* GetTileVertical(const int& index,const int& dir);
 	Tile* GetTileHorizontal (const int& index, const int& dir);
@@ -20,16 +20,16 @@ private:
 	int GetIndexOf(Vec2f point);
 	int GetIndexBiasRight(float x)
 	{
-		return (int)(x / levelData.tileDimensions.x);
+		return (int)(x / m_currentLevelData.tileDimensions.x);
 	};
 	int GetIndexBiasBottom(float y)
 	{
-		return (int)(y / levelData.tileDimensions.y);
+		return (int)(y / m_currentLevelData.tileDimensions.y);
 	};
 	int GetIndexBiasLeft(float x)
 	{
-		int ix = (int)(x / levelData.tileDimensions.x);
-		if ((float)ix * levelData.tileDimensions.x == x)
+		int ix = (int)(x / m_currentLevelData.tileDimensions.x);
+		if ((float)ix * m_currentLevelData.tileDimensions.x == x)
 		{
 			ix--;
 		}
@@ -37,8 +37,8 @@ private:
 	};
 	int GetIndexBiasTop(float y)
 	{
-		int iy = (int)(y / levelData.tileDimensions.y);
-		if ((float)iy * levelData.tileDimensions.y == y)
+		int iy = (int)(y / m_currentLevelData.tileDimensions.y);
+		if ((float)iy * m_currentLevelData.tileDimensions.y == y)
 		{
 			iy--;
 		}
@@ -46,7 +46,7 @@ private:
 	};
 	bool GetTileCollisionRect(RectF& ent_Rect, RectF& out_rect);
 	void GetTileIndexBias(RectI& out_rect, const RectF& rect);
-	void GetRenderTiles();
+
 public:
 	Level() = default;
 	Level(Camera& cam);

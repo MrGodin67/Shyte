@@ -4,73 +4,72 @@
 
 Camera::Camera(RenderTarget * next,float width, float height)
 	:
-	pos({ 0.0f,0.0f }),
-	center({ width / 2.0f,height / 2.0f }),
-	screen_width(width),
-	screen_height(height),
+	m_pos({ 0.0f,0.0f }),
+	m_center({ width / 2.0f,height / 2.0f }),
+	m_screen_width(width),
+	m_screen_height(height),
 	m_nextRenderTarget(next)
 {
-	viewFrame.left = pos.x;
-	viewFrame.top = pos.y;
-	viewFrame.right = viewFrame.left + screen_width;
-	viewFrame.bottom = viewFrame.top + screen_height;
+	m_viewFrame.left = m_pos.x;
+	m_viewFrame.top = m_pos.y;
+	m_viewFrame.right = m_viewFrame.left + m_screen_width;
+	m_viewFrame.bottom = m_viewFrame.top + m_screen_height;
 	Resize(width, height);
-	scroll_pos = center;
+	m_scroll_pos = m_center;
 }
 void Camera::Rasterize(Drawable & obj)
 {
-	obj.Transform(D2D1::Matrix3x2F::Translation({ -pos.x,-pos.y }));
+	obj.Transform(D2D1::Matrix3x2F::Translation({ -m_pos.x,-m_pos.y }));
 	m_nextRenderTarget->Rasterize(obj);
 }
 void Camera::Scroll(Vec2f& dir)
 {
 	
-	scroll_pos += dir;
-	if (scroll_pos.x < center.x)scroll_pos.x = center.x;
-	if (scroll_pos.x > mapFrame.right -center.x)scroll_pos.x = mapFrame.right - center.x;
-	if (scroll_pos.y < center.y)scroll_pos.y = center.y;
-	if (scroll_pos.y > mapFrame.bottom - center.y)scroll_pos.y = mapFrame.bottom - center.y;
+	m_scroll_pos += dir;
+	if (m_scroll_pos.x < m_center.x)m_scroll_pos.x = m_center.x;
+	if (m_scroll_pos.x > m_mapFrame.right -m_center.x)m_scroll_pos.x = m_mapFrame.right - m_center.x;
+	if (m_scroll_pos.y < m_center.y)m_scroll_pos.y = m_center.y;
+	if (m_scroll_pos.y > m_mapFrame.bottom - m_center.y)m_scroll_pos.y = m_mapFrame.bottom - m_center.y;
 
-	this->UpdatePosition(scroll_pos);
+	this->UpdatePosition(m_scroll_pos);
 
 }
 
 
-Vec2f Camera::GetPos() { return pos; }
-void Camera::ConfineToMap(RectF& map_frame) { mapFrame = map_frame; };
+Vec2f Camera::GetPosition() { return m_pos; }
+void Camera::ConfineToMap(RectF& map_frame) { m_mapFrame = map_frame; };
 Vec2f Camera:: ConvertToWorldSpace(Vec2f in_pos)
 {
-	return Vec2f (in_pos + this->pos);
+	return Vec2f (in_pos + m_pos);
 }
-bool Camera::PointInViewFrame(Vec2f pt, const Vec2f& offset)
+RectF Camera::GetViewFrame()
 {
-	return pt.x > viewFrame.left + -offset.x && pt.x < viewFrame.right + offset.x &&
-		pt.y > viewFrame.top + -offset.y && pt.y < viewFrame.bottom + offset.y;
+	return m_viewFrame;
 }
 void Camera::Resize(float& w, float& h)
 {
-	screen_width = w;
-	screen_height = h;
-	center = Vec2f(screen_width / 2, screen_height / 2);
-	viewFrame.left = pos.x;
-	viewFrame.top = pos.y;
-	viewFrame.right = viewFrame.left + screen_width;
-	viewFrame.bottom = viewFrame.top + screen_height;
+	m_screen_width = w;
+	m_screen_height = h;
+	m_center = Vec2f(m_screen_width / 2, m_screen_height / 2);
+	m_viewFrame.left = m_pos.x;
+	m_viewFrame.top = m_pos.y;
+	m_viewFrame.right = m_viewFrame.left + m_screen_width;
+	m_viewFrame.bottom = m_viewFrame.top + m_screen_height;
 
 };
 
 void Camera::UpdatePosition(Vec2f& in_pos)
 {
-	pos = in_pos - center ;
+	m_pos = in_pos - m_center ;
 	
-	pos.x = __max(pos.x, mapFrame.left);
-	pos.y = __max(pos.y, mapFrame.top);
-	pos.x = __min(pos.x, mapFrame.right - screen_width);
-	pos.y = __min(pos.y, mapFrame.bottom - screen_height);
-	pos.y = __max(pos.y, 0.0f);
+	m_pos.x = __max(m_pos.x, m_mapFrame.left);
+	m_pos.y = __max(m_pos.y, m_mapFrame.top);
+	m_pos.x = __min(m_pos.x, m_mapFrame.right - m_screen_width);
+	m_pos.y = __min(m_pos.y, m_mapFrame.bottom - m_screen_height);
+	m_pos.y = __max(m_pos.y, 0.0f);
 
-	viewFrame.left = pos.x;
-	viewFrame.top = pos.y;
-	viewFrame.right = viewFrame.left + screen_width;
-	viewFrame.bottom = viewFrame.top + screen_height;
+	m_viewFrame.left = m_pos.x;
+	m_viewFrame.top = m_pos.y;
+	m_viewFrame.right = m_viewFrame.left + m_screen_width;
+	m_viewFrame.bottom = m_viewFrame.top + m_screen_height;
 }
