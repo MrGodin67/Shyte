@@ -78,7 +78,7 @@ void Level::Initialize(std::string  mapFilename,Player* p)
 
 void Level::Draw(Graphics& gfx)
 {
-	for (auto& it : m_tiles)
+	for (auto& it : m_renderTiles)
 		m_cam.Rasterize(it->GetDrawable());
 
 	for (auto& it : collisionTiles)
@@ -127,6 +127,11 @@ void Level::DoSupported(Entity * ent)
 	EntityStates s = EntityStates::jumping;
 	ent->SetState(s);
 
+}
+
+void Level::Update(const float & dt)
+{
+	GetRenderTiles();
 }
 
 
@@ -292,4 +297,24 @@ void Level::GetTileIndexBias(RectI& out_rect, const RectF & rect)
 
 	out_rect.left  = GetIndexBiasRight(rect.left);
 	out_rect.right = GetIndexBiasLeft(rect.right);
+}
+
+void Level::GetRenderTiles()
+{
+	m_renderTiles.clear();
+	Vec2i start = Vec2i(m_cam.GetPos());
+	start /=  levelData.tileDimensions.x;
+	Vec2i dims = { Locator::ScreenWidth<int>() , Locator::ScreenHeight<int>() };
+	dims /= levelData.tileDimensions.x;
+	Vec2i end = start + Vec2i(dims.x + 1,dims.y + 1);
+	Tile* tile = nullptr;
+	for (int r = start.y; r <= end.y; r++)
+	{
+		for (int c = start.x; c <= end.x; c++)
+		{
+		  if((tile = GetTile(r*levelData.rowsColumns.x + c)) != nullptr)
+			   m_renderTiles.push_back(tile);
+		}
+	}
+
 }

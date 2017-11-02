@@ -11,7 +11,7 @@ private:
 	Camera& m_cam;
 	_LevelFileData levelData;
 	std::vector<Tile*> collisionTiles;
-	
+	std::vector<Tile*> m_renderTiles;
 	void CorrectCollision(Entity* ent, RectF tile_Rect);
 	Tile* GetTileVertical(const int& index,const int& dir);
 	Tile* GetTileHorizontal (const int& index, const int& dir);
@@ -46,7 +46,7 @@ private:
 	};
 	bool GetTileCollisionRect(RectF& ent_Rect, RectF& out_rect);
 	void GetTileIndexBias(RectI& out_rect, const RectF& rect);
-	
+	void GetRenderTiles();
 public:
 	Level() = default;
 	Level(Camera& cam);
@@ -56,5 +56,6 @@ public:
 	Vec2f InitialPlayerPosition();
 	void DoCollision(Entity* ent);
 	void DoSupported(Entity* ent);
+	void Update(const float& dt);
 	
 };

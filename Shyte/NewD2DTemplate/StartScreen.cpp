@@ -8,8 +8,8 @@ StartScreen::StartScreen()
 {
 	
 	m_image = Locator::ImageManager()->GetImage("start_screen")->GetTexture();
-	float x = (float)(Locator::ScreenWidth() / 2) - (float)(m_image->GetSize().width / 2);
-	float y = (float)(Locator::ScreenHeight() / 2) - (float)(m_image->GetSize().height / 2);
+	float x = (Locator::ScreenWidth<float>() / 2) - (float)(m_image->GetSize().width / 2);
+	float y = (Locator::ScreenHeight<float>() / 2) - (float)(m_image->GetSize().height / 2);
 	m_frame = { x ,y,x + (float)m_image->GetSize().width ,y + (float)m_image->GetSize().height};
 	
 	m_buttons[0] = { x+16.0f,y+16.0f * 6.0f,x+16.0f* 5.0f,y+16.0f * 7.0f };

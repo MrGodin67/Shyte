@@ -56,6 +56,7 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 		m_currLevel->DoSupported(m_player.get());
 		m_player->Update(deltaTime);
 		m_cam.UpdatePosition(m_player->GetPosition());
+		m_currLevel->Update(deltaTime);
 	}
 	break;
 	case _GameState::paused:

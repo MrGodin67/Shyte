@@ -52,12 +52,12 @@ TextureManager * Locator::ImageManager()
 	return m_ImageManager;
 }
 
-int Locator::ScreenHeight()
-{
-	return m_screenHeight;
-}
-
-int Locator::ScreenWidth()
-{
-	return m_screenWidth;
-}
+//int Locator::ScreenHeight()
+//{
+//	return m_screenHeight;
+//}
+//
+//int Locator::ScreenWidth()
+//{
+//	return m_screenWidth;
+//}

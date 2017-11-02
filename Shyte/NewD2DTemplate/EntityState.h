@@ -81,7 +81,6 @@ public:
 		switch (m_state)
 		{
 		case EntityStates::idle:
-			data.seq_Index = 0;
 			DoIdle( data);
 			break;
 		case EntityStates::moving:

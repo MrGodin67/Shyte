@@ -22,7 +22,15 @@ public:
 	static ID2D1RenderTarget* RenderTarget();
 	static TextHandler* TextManager();
 	static TextureManager* ImageManager();
-	static int ScreenHeight();
-	static int ScreenWidth();
+	template<typename T>
+	static T ScreenHeight()
+	{
+		return (T)m_screenHeight;
+	};
+	template<typename T>
+	static T ScreenWidth()
+	{
+		return (T)m_screenWidth;
+	};
 	
 };

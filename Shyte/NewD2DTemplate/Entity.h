@@ -30,7 +30,7 @@ protected:
 public:
 	Entity();
 	virtual void Update(const float& dt) = 0;
-	virtual Vec2f GetPosition() { return m_coreData.position; }
+	virtual Vec2f GetPosition() = 0;
 	virtual RectF GetCollisionRect() { return RectF(); };
 	virtual RectF GetCollisionRect(Vec2f& offset_translation) { return RectF(); };
 	virtual void SetState(EntityStates state) { m_currentState = state; };

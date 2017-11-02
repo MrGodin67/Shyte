@@ -15,6 +15,9 @@ Player::Player(Animation::RenderDesc & desc, PlayerData data, _CoreData core)
 	m_renderDesc = desc;
 	seq_Indices["left"] = { 10,9,10,11 };
 	seq_Indices["right"] = { 4,3,4,5 };
+	seq_Indices["up"] = { 1,0,1,2 };
+	seq_Indices["down"] = { 7,6,7,8 };
+
 	mp_seqPtr = &seq_Indices["left"];
 	
 }
@@ -34,6 +37,11 @@ void Player::Update(const float & dt)
 		m_coreData.position.x + m_drawWidth,m_coreData.position.y + m_drawHeight };
 	m_center.x = m_renderDesc.drawRect.left + (m_drawWidth * 0.5f);
 	m_center.y = m_renderDesc.drawRect.top + (m_drawHeight * 0.5f);
+}
+
+Vec2f Player::GetPosition()
+{
+	return m_coreData.position;
 }
 
 RectF Player::GetCollisionRect()
@@ -83,15 +91,19 @@ void Player::HandleInput(Keyboard & kbd, Mouse & mouse)
 		m_coreData.direction.Set(MOVE_LEFT);
 		m_currentState = EntityStates::moving;
 		mp_seqPtr = &seq_Indices["left"];
-		
-		
-				
 	}
 	 if (kbd.KeyIsPressed(VK_UP))
 	{
-		m_currentState = EntityStates::jumping;
+	
+		mp_seqPtr = &seq_Indices["up"];
 		
 	}
+	 if (kbd.KeyIsPressed(VK_DOWN))
+	 {
+		
+		 mp_seqPtr = &seq_Indices["down"];
+
+	 }
 	 
 	if (kbd.KeyIsPressed(VK_SPACE))
 	{

@@ -30,6 +30,7 @@ public:
 
 	// Inherited via Entity
 	virtual void Update(const float & dt) override;
+	virtual Vec2f GetPosition()override;
 	virtual RectF GetCollisionRect()override;
 	virtual RectF GetCollisionRect(Vec2f& offset_translation) override;
 	virtual Vec2f GetCenter()override;

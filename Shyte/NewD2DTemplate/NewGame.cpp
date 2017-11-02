@@ -4,8 +4,8 @@
 NewGame::NewGame()
 {
 	m_image = Locator::ImageManager()->GetImage("new_game")->GetTexture();
-	float x = (float)(Locator::ScreenWidth() / 2) - (float)(m_image->GetSize().width / 2);
-	float y = (float)(Locator::ScreenHeight() / 2) - (float)(m_image->GetSize().height / 2);
+	float x = (Locator::ScreenWidth<float>() / 2) - (float)(m_image->GetSize().width / 2);
+	float y = (Locator::ScreenHeight<float>() / 2) - (float)(m_image->GetSize().height / 2);
 	m_frame = { x ,y,x + (float)m_image->GetSize().width ,y + (float)m_image->GetSize().height };
 
 	m_buttons[0] = {x+56.0f,y+426.0f,x+130.0f,y+460.0f };
