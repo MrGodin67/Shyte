@@ -12,16 +12,11 @@ Game::Game(Direct3DWindow & wnd)
 	m_cam(&gfx,(float)wnd.ScreenWidth(), (float)wnd.ScreenHeight())
 {
 	Locator::SetScreenDimensions(wnd.ScreenWidth(), wnd.ScreenHeight());
-	
-	ConstructLevelsFromTextFile("map001.txt");
-	ConstructLevelsFromTextFile("map002.txt");
+	ConstructLevelsFromTextFile("map001.txt",0);
+	ConstructLevelsFromTextFile("map002.txt", 1);
+	ConstructLevelsFromTextFile("map003.txt", 2);
 	LoadImages();
-	//CreatePlayer();
-	InitCamera();
 	InitMenus();
-	//CreateLevel("data\\levels\\map001.bin");
-	m_currentBackgroundColor = m_backgroundColors[0];
-	
 }
 
 Game::~Game()
@@ -88,14 +83,15 @@ HRESULT Game::RenderScene()
 	{
 		case _GameState::paused:
 		{
+			m_backGroundImage->Draw(m_cam, gfx);
 			m_currLevel->Draw(gfx);
 			m_cam.Rasterize(m_player->GetDrawable());
-			DrawLight();
 			m_currentMenu->Draw(gfx);
 		}
 		break;
 		case _GameState::running:
 		{
+			m_backGroundImage->Draw(m_cam, gfx);
 			m_currLevel->Draw(gfx);
 			m_cam.Rasterize(m_player->GetDrawable());
 		}break;
@@ -106,7 +102,6 @@ HRESULT Game::RenderScene()
 	};
 	
 	
-	//gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_player->GetCollisionRect(-m_cam.GetPos()).ToD2D(), D2D1::ColorF(1.0f,1.0f,1.0f,1.0f));;
 	
 	
 	hr = gfx.EndScene();
@@ -140,9 +135,13 @@ void Game::LoadImages()
 	data.emplace_back("paused_screen", L"assets\\pausedscreen.png", 48.0f, 16.0f);
 	data.emplace_back("input_screen", L"assets\\inputscreen.png", 48.0f, 16.0f);
 	data.emplace_back("new_game", L"assets\\new_game.png", 512.0f, 512.0f);
-	data.emplace_back("light", L"assets\\light.png", 512.0f, 512.0f);
+	data.emplace_back("background", L"assets\\background.png", 1024.0f, 1024.0f);
+
 	m_textureHandler->LoadImages(data);
 	Locator::SetImageManager(m_textureHandler.get());
+	m_currentBackgroundColor = m_backgroundColors[0];
+	m_backGroundImage = std::make_unique<BackGround>();
+	
 }
 
 void Game::CreatePlayer(PlayerData* data)
@@ -155,13 +154,7 @@ void Game::CreatePlayer(PlayerData* data)
 	desc.image = m_textureHandler->GetImage(std::string(data->name))->GetTexture();
 	m_player = std::make_unique<Player>(desc,*data, InitialPlayerCoreData::Get(std::string(data->name)));
 	
-	CreateLevel("data\\levels\\map002.bin");
-}
-
-void Game::InitCamera()
-{
-	m_cam.ConfineToMap(RectF(0.0f, 0.0f, 20.0f*64.0f, 20.0f*64.0f));
-	
+	CreateLevel("data\\levels\\map003.bin");
 }
 
 void Game::InitMenus()
@@ -179,13 +172,17 @@ void Game::CreateLevel(std::string mapFilename)
 		m_currLevel.reset();
 	m_currLevel = std::make_unique<Level>(m_cam);
 	m_currLevel->Initialize(mapFilename, m_player.get());
+	m_backGroundImage->SetColorIndex(m_currLevel->CurrentLevelIndex());
 }
 
-void Game::ConstructLevelsFromTextFile(std::string mapFilename)
+void Game::ConstructLevelsFromTextFile(std::string mapFilename,int levelIndex)
 {
 	_LevelFileData levelData;
 	std::string fName;
 	DXStringHandler::DXExtractNameFromFile(mapFilename, fName);
+	
+	levelData.levelIndex = levelIndex;
+	
 	std::vector<std::string> lines;
 	bool result = DXStringHandler::DXLoadTextFile(mapFilename, lines);
 	assert(result);
@@ -193,7 +190,7 @@ void Game::ConstructLevelsFromTextFile(std::string mapFilename)
 	DXStringHandler::Tokenize(&tokens, lines[0], " ");
 	assert(tokens.size() == 4);
 	levelData.tileDimensions = Vec2f( (float)atoi(tokens[0].c_str()), (float)atoi(tokens[1].c_str()));
-	levelData.rowsColumns = { atoi(tokens[2].c_str()), atoi(tokens[3].c_str()) };
+	levelData.rowsColumns = { atoi(tokens[3].c_str()), atoi(tokens[2].c_str()) };
 	lines.erase(lines.begin());
 	Vec2f startPos(0.0f, 0.0f);
 	
@@ -210,29 +207,41 @@ void Game::ConstructLevelsFromTextFile(std::string mapFilename)
 			case ' ':
 			{
 				
-				levelData.map[r][c] = 1;
+				levelData.map[r][c] = 64;
 
 			}
 			break;
-			case '*':
+			case '4':
 			{
 				
-				levelData.map[r][c] = 0;
+				levelData.map[r][c] = 4;
 			}
 			break;
+			case '0':
+				levelData.map[r][c] = 0;
+			break;
+			case '1':
+				levelData.map[r][c] = 1;
+				break;
+			case '2':
+				levelData.map[r][c] = 2;
+				break;
+			case '3':
+				levelData.map[r][c] = 3;
+				break;
 			case 'p':
 			{
 				
 				levelData.playerPos = startPos;
-				levelData.map[r][c] = 2;
+				levelData.map[r][c] = 64;
 
 			}
 			break;
-			case 'c':
+			case 'x':
 			{
 
 				
-				levelData.map[r][c] = 4;
+				levelData.map[r][c] = 7;
 
 			}
 			break;
@@ -257,11 +266,24 @@ void Game::HandleUserInterface(Mouse::Event& mouse_event, Keyboard::Event& kbd_e
 	{
 		unsigned char key = kbd_event.GetCode();
 		ReturnType result_key = m_currentMenu->OnKeyPress(key);
-		if (result_key.type == RETURN_ENTER)
+		switch (result_key.result)
 		{
-			m_userName = *(std::string*)result_key.data;
-			m_currentMenu = m_menus["new_game"].get();
+			case RETURN_ENTER:
+			{
+				switch (result_key.type)
+				{
+					case MENU_TYPE_INPUT:
+					{
+						m_userName = *(std::string*)result_key.data;
+						m_currentMenu = m_menus["new_game"].get();
+					}
+					break;
+				};
+			
+			}
+			break;// RETURN ENTER
 		}
+		
 	}
 	ReturnType result;
 	
@@ -269,7 +291,7 @@ void Game::HandleUserInterface(Mouse::Event& mouse_event, Keyboard::Event& kbd_e
 	{
 	
 		result = m_currentMenu->OnMouseClick({ mouse_event.GetPosX(),mouse_event.GetPosY() });
-		switch (result.type)
+		switch (result.result)
 		{
 		case RETURN_NEW_BACK:
 			if (m_previousMenu != nullptr)
@@ -291,7 +313,6 @@ void Game::HandleUserInterface(Mouse::Event& mouse_event, Keyboard::Event& kbd_e
 			break;
 		case RETURN_NEW:
 			m_previousMenu = m_currentMenu;
-			
 			m_currentMenu = m_menus["user_input"].get();
 			break;
 		case RETURN_NEW_DONE:

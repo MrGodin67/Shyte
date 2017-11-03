@@ -7,6 +7,7 @@ SpriteSheet::SpriteSheet(std::wstring filename, float clipWidth, float clipHeigh
 	assert(texture);
 	width = (float)texture->Width();
 	height = (float)texture->Height();
+	columns = (int)(width / clipWidth);
 }
 
 SpriteSheet::~SpriteSheet()
@@ -15,11 +16,16 @@ SpriteSheet::~SpriteSheet()
 
 RectF SpriteSheet::GetClippedImage(const int & index)
 {
-	float columns = width / clipWidth;
-	int col = index % (int)columns;
-	int row =  index / (int)columns;
+	
+	int col = index % columns;
+	int row =  index / columns;
 	return RectF((float)col*clipWidth,(float)row*clipHeight,
 		((float)col*clipWidth)+clipWidth,((float)row*clipHeight)+clipHeight);
+}
+
+int SpriteSheet::Columns()
+{
+	return columns;
 }
 
 ID2D1Bitmap * SpriteSheet::GetTexture()

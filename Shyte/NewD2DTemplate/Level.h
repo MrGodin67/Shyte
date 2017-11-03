@@ -44,7 +44,7 @@ private:
 		}
 		return iy;
 	};
-	bool GetTileCollisionRect(RectF& ent_Rect, RectF& out_rect);
+	Tile* GetTileCollisionRect(RectF& ent_Rect,Vec2i& vel);
 	void GetTileIndexBias(RectI& out_rect, const RectF& rect);
 
 public:
@@ -57,5 +57,6 @@ public:
 	void DoCollision(Entity* ent);
 	void DoSupported(Entity* ent);
 	void Update(const float& dt);
+	int CurrentLevelIndex();
 	
 };

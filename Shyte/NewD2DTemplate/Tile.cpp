@@ -53,3 +53,8 @@ RectF Tile::CollisionRect()
 {
 	return m_collisionRect;
 }
+
+RectF Tile::TileRect()
+{
+	return m_renderDesc.drawRect;
+}

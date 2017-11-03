@@ -32,6 +32,7 @@ ReturnType UserInput::OnMouseMove(const Vec2i & mousePos)
 ReturnType UserInput::OnKeyPress(unsigned char & key)
 {
 	ReturnType result;
+	result.type = MENU_TYPE_INPUT;
 	if (key == VK_RETURN)
 	{
 		if (m_text.size() > 0)
@@ -40,7 +41,7 @@ ReturnType UserInput::OnKeyPress(unsigned char & key)
 				m_text.erase(m_text.begin());
 			while (m_text.back() == ' ')
 				m_text.pop_back();
-			result.type = RETURN_ENTER;
+			result.result = RETURN_ENTER;
 			result.data = &m_text;
 			return result;
 		}

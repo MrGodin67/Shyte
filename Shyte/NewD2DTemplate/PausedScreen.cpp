@@ -24,11 +24,11 @@ PausedScreen::~PausedScreen()
 ReturnType PausedScreen::OnMouseClick(const Vec2i & mousePos)
 {
 	ReturnType type;
-
+	type.type = MENU_TYPE_PAUSED;
 	if (m_buttons[0].Contains(mousePos))
-		type.type = RETURN_RESUME;
+		type.result = RETURN_RESUME;
 	if (m_buttons[1].Contains(mousePos))
-		type.type = RETURN_EXIT;
+		type.result = RETURN_EXIT;
 
 	return type;
 }

@@ -11,38 +11,45 @@ void Level::Initialize(std::string  mapFilename,Player* p)
 	assert(p);
 	FileManager::ReadLevelData(mapFilename.c_str(), m_currentLevelData);
 	Tile::SetDimensions(m_currentLevelData.tileDimensions.x, m_currentLevelData.tileDimensions.y);
-	Tile::SetImage(Locator::ImageManager()->GetImage("level1")->GetTexture());
+	SpriteSheet* image = Locator::ImageManager()->GetImage("level1");
+	Tile::SetImage(image->GetTexture());
 	m_tiles.resize(m_currentLevelData.rowsColumns.x * m_currentLevelData.rowsColumns.y);
 	Vec2f startPos = { 0.0f,0.0f };
 	bool passable = false;
+	m_cam.ConfineToMap(RectF(0.0f, 0.0f,
+		(float)(m_currentLevelData.tileDimensions.x * m_currentLevelData.rowsColumns.x),
+		(float)(m_currentLevelData.tileDimensions.y * m_currentLevelData.rowsColumns.y)));
 	int clipIndex = 0;
+	p->UpdatePosition(m_currentLevelData.playerPos);
+	m_cam.UpdatePosition(m_currentLevelData.playerPos);
 	for (int r = 0; r < m_currentLevelData.rowsColumns.y; r++)
 	{
 		startPos.x = 0.0f;
 		for (int c = 0; c < m_currentLevelData.rowsColumns.x; c++)
 		{
-			
+			bool walkable = true;
 			const int index = r * m_currentLevelData.rowsColumns.x + c;
 		
 			switch (m_currentLevelData.map[r][c])
 			{
-			case 1:
-			{
-				clipIndex = 1;
-				passable = true;
-			}
-				break;
 			case 0:
 			{
-				clipIndex = 0;
+				clipIndex = m_currentLevelData.levelIndex * image->Columns() + m_currentLevelData.map[r][c];
 				passable = false;
-				
+
+			}
+			break;
+			case 1:
+			{
+				clipIndex = m_currentLevelData.levelIndex * image->Columns() + m_currentLevelData.map[r][c];
+				passable = false;
 			}
 				break;
+			
 			case 2:
 			{
-				clipIndex = 1;
-				passable = true;
+				clipIndex = m_currentLevelData.levelIndex * image->Columns() + m_currentLevelData.map[r][c];
+				passable = false;
 				p->CoreData()->position = m_currentLevelData.playerPos;
 			
 
@@ -50,7 +57,7 @@ void Level::Initialize(std::string  mapFilename,Player* p)
 			break;
 			case 3:
 			{
-				clipIndex = 2;
+				clipIndex = m_currentLevelData.levelIndex * image->Columns() + m_currentLevelData.map[r][c];
 				passable = false;
 				
 
@@ -59,16 +66,38 @@ void Level::Initialize(std::string  mapFilename,Player* p)
 			break;
 			case 4:
 			{
-				clipIndex = 4;
-				passable = true;
+				clipIndex = m_currentLevelData.levelIndex * image->Columns() + m_currentLevelData.map[r][c];
+				passable = false;
+				walkable = false;
 
 
 
 			}
 			break;
+			case 64:
+			{
+				clipIndex = 63;
+				passable = true;
+
 			}
-			m_tiles[index] = std::make_unique<Tile>(startPos,
-				Locator::ImageManager()->GetImage("level1")->GetClippedImage(clipIndex), passable);
+			break;
+			case 7:
+			{
+				clipIndex = m_currentLevelData.levelIndex * image->Columns() + m_currentLevelData.map[r][c];
+				passable = true;
+
+			}
+			break;
+			}
+			if (walkable)
+			{
+				RectF collideRect = { startPos.x,startPos.y,startPos.x + Tile::Width(),startPos.y + (Tile::Height() * 0.5f) };
+				m_tiles[index] = std::make_unique<Tile>(startPos,
+					Locator::ImageManager()->GetImage("level1")->GetClippedImage(clipIndex), passable,&collideRect);
+			}
+			else
+				m_tiles[index] = std::make_unique<Tile>(startPos,
+					Locator::ImageManager()->GetImage("level1")->GetClippedImage(clipIndex), passable);
 			startPos.x += Tile::Width();
 		}
 		startPos.y += Tile::Height();
@@ -97,13 +126,15 @@ Vec2f Level::InitialPlayerPosition()
 void Level::DoCollision(Entity * ent)
 {
 	RectF cRect_ent = ent->GetCollisionRect();
-	RectF rect;
-	while (GetTileCollisionRect(cRect_ent, rect))
+	Tile* pTile = nullptr;
+	pTile = GetTileCollisionRect(cRect_ent,Vec2i(Sign(ent->GetPosition().x),Sign(ent->GetPosition().y)));
+	if(pTile != nullptr)
 	{
-		if (cRect_ent.Overlaps(rect))
+		RectF tileCollisionRect = pTile->CollisionRect();
+		if (cRect_ent.Overlaps(tileCollisionRect))
 		{
-			CorrectCollision(ent, rect);
-			break;
+			CorrectCollision(ent, tileCollisionRect);
+			
 		}
 	}
 }
@@ -131,6 +162,11 @@ void Level::Update(const float & dt)
 	Vec2i dims = { Locator::ScreenWidth<int>() , Locator::ScreenHeight<int>() };
 	dims /= (int)m_currentLevelData.tileDimensions.x;
 	m_endDrawIndex = m_startDrawIndex + Vec2i(dims.x + 1, dims.y + 1);
+}
+
+int Level::CurrentLevelIndex()
+{
+	return m_currentLevelData.levelIndex;
 }
 
 void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
@@ -250,40 +286,109 @@ int Level::GetIndexOf(Vec2f point)
 	return r * m_currentLevelData.rowsColumns.x + c;
 }
 
-bool Level::GetTileCollisionRect(RectF & ent_Rect, RectF & out_rect)
+Tile* Level::GetTileCollisionRect(RectF & ent_Rect,Vec2i& vel)
 {
 	Vec2i XPos, YPos;
 	RectI rect;
 	GetTileIndexBias(rect, ent_Rect);
-	for (int iy = rect.top, iyEnd = rect.bottom;
-		iy <= iyEnd; iy++)
+	if (vel.x > 0 && vel.y > 0)
 	{
-		for (int ix = rect.left, ixEnd = rect.right;
-			ix <= ixEnd; ix++)
+		for (int iy = rect.bottom, iyEnd = rect.top;
+			iy >= iyEnd; iy--)
 		{
-			int index = iy*m_currentLevelData.rowsColumns.x + ix;
-			
-			Tile* t;
-			if ((t = GetTile(index)) == nullptr)
-				continue;
-			if (!t->Passable())
+			for (int ix = rect.left, ixEnd = rect.right;
+				ix <= ixEnd; ix++)
 			{
-				out_rect = t->CollisionRect();
-				return true;
+				int index = iy*m_currentLevelData.rowsColumns.x + ix;
+
+				Tile* t;
+				if ((t = GetTile(index)) == nullptr)
+					continue;
+				if (!t->Passable())
+				{
+					return t;
+				}
+
 			}
-			
 		}
 	}
-	return false;
+	if (vel.x > 0 && vel.y <= 0)
+	{
+		for (int iy = rect.top, iyEnd = rect.bottom;
+			iy <= iyEnd; iy++)
+		{
+			for (int ix = rect.left, ixEnd = rect.right;
+				ix <= ixEnd; ix++)
+			{
+				int index = iy*m_currentLevelData.rowsColumns.x + ix;
+
+				Tile* t;
+				if ((t = GetTile(index)) == nullptr)
+					continue;
+				if (!t->Passable())
+				{
+					return t;
+				}
+
+			}
+		}
+	}
+
+
+	if (vel.x < 0 && vel.y > 0)
+	{
+		for (int iy = rect.bottom, iyEnd = rect.top;
+			iy >= iyEnd; iy--)
+		{
+			for (int ix = rect.right, ixEnd = rect.left;
+				ix >= ixEnd; ix--)
+			{
+				int index = iy*m_currentLevelData.rowsColumns.x + ix;
+
+				Tile* t;
+				if ((t = GetTile(index)) == nullptr)
+					continue;
+				if (!t->Passable())
+				{
+					return t;
+				}
+
+			}
+		}
+	}
+	if (vel.x <= 0 && vel.y <= 0)
+	{
+		for (int iy = rect.top, iyEnd = rect.bottom;
+			iy <= iyEnd; iy++)
+		{
+			for (int ix = rect.right, ixEnd = rect.left;
+				ix >= ixEnd; ix--)
+			{
+				int index = iy*m_currentLevelData.rowsColumns.x + ix;
+
+				Tile* t;
+				if ((t = GetTile(index)) == nullptr)
+					continue;
+				if (!t->Passable())
+				{
+					return t;
+				}
+
+			}
+		}
+	}
+	return nullptr;
 }
 
 void Level::GetTileIndexBias(RectI& out_rect, const RectF & rect)
 {
-	out_rect.top    = GetIndexBiasBottom(rect.top);
-	out_rect.bottom = GetIndexBiasTop(rect.bottom);
+	
+		out_rect.top = GetIndexBiasBottom(rect.top);
+		out_rect.bottom = GetIndexBiasTop(rect.bottom);
 
-	out_rect.left  = GetIndexBiasRight(rect.left);
-	out_rect.right = GetIndexBiasLeft(rect.right);
+		out_rect.left = GetIndexBiasRight(rect.left);
+		out_rect.right = GetIndexBiasLeft(rect.right);
+	
 }
 
 

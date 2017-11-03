@@ -287,12 +287,18 @@
     <ClInclude Include="UserInput.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="BackGround.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="map001.txt">
       <Filter>Objects\Level\maps</Filter>
     </Text>
     <Text Include="map002.txt">
+      <Filter>Objects\Level\maps</Filter>
+    </Text>
+    <Text Include="map003.txt">
       <Filter>Objects\Level\maps</Filter>
     </Text>
   </ItemGroup>

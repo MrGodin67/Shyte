@@ -10,6 +10,7 @@ private:
 	static float m_width;
 	static float m_height;
 	static ID2D1Bitmap* m_image;
+	
 private:
 	bool m_passable;
 	RectF m_collisionRect;
@@ -23,5 +24,6 @@ public:
 	static float Height();
 	bool Passable();
 	RectF CollisionRect();
+	RectF TileRect();
 
 };

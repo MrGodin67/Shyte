@@ -72,6 +72,12 @@ Vec2f Player::GetCenter()
 	return m_center;
 }
 
+void Player::UpdatePosition(Vec2f & pos)
+{
+	SetPosition(pos);
+	m_coreData.position = pos;
+}
+
 void Player::HandleInput(Keyboard & kbd, Mouse & mouse)
 {
 	Vec2f vel = { 0.0f,0.0f };

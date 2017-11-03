@@ -19,6 +19,7 @@
 #include "coredata.h"
 #include "PausedScreen.h"
 #include "UserInput.h"
+#include "BackGround.h"
 
 
 class Game
@@ -35,6 +36,7 @@ private:
 	std::unique_ptr<TextureManager> m_textureHandler;
 	std::unique_ptr<Player> m_player;
 	std::unique_ptr<Level> m_currLevel;
+	std::unique_ptr<BackGround> m_backGroundImage;
 
 	std::unordered_map<std::string, std::unique_ptr<UserInterface>> m_menus;
 	UserInterface* m_currentMenu = nullptr;
@@ -63,10 +65,9 @@ private:
 	void LoadAudio();
 	void LoadImages();
 	void CreatePlayer(PlayerData* data);
-	void InitCamera();
 	void InitMenus();
 	void CreateLevel(std::string mapFilename);
-	void ConstructLevelsFromTextFile(std::string mapFilename);
+	void ConstructLevelsFromTextFile(std::string mapFilename,int levelIndex);
 	void HandleUserInterface(Mouse::Event& mouse_event,Keyboard::Event& kbd_event);
 	void DrawLight();
 };

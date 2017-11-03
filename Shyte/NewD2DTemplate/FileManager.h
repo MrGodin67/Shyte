@@ -14,6 +14,7 @@ struct _LevelFileData
 	Vec2f playerPos;
 	Vec2i rowsColumns;
 	float surfaceFriction;
+	int levelIndex;
 	_EnemyData enemies[MAX_ENEMIES];
 	int map[MAX_TILES_PER_ROW][MAX_TILES_PER_COL];
 	

@@ -24,13 +24,13 @@ StartScreen::~StartScreen()
 ReturnType StartScreen::OnMouseClick(const Vec2i & mousePos)
 {
 	ReturnType type;
-	
+	type.type = MENU_TYPE_START;
 	if (m_buttons[0].Contains(mousePos))
-		type.type = RETURN_CONTINUE;
+		type.result = RETURN_CONTINUE;
 	if (m_buttons[1].Contains(mousePos))
-		type.type = RETURN_NEW;
+		type.result = RETURN_NEW;
 	if (m_buttons[2].Contains(mousePos))
-		type.type = RETURN_EXIT;
+		type.result = RETURN_EXIT;
 
 	return type;
 }

@@ -181,6 +181,7 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationSequence.h" />
+    <ClInclude Include="BackGround.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ChiliException.h" />
@@ -229,6 +230,7 @@
   <ItemGroup>
     <Text Include="map001.txt" />
     <Text Include="map002.txt" />
+    <Text Include="map003.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

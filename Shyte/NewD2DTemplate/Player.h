@@ -40,7 +40,7 @@ public:
 	virtual RectF GetCollisionRect()override;
 	virtual RectF GetCollisionRect(Vec2f& offset_translation) override;
 	virtual Vec2f GetCenter()override;
-
+	void UpdatePosition(Vec2f& pos);
 	void HandleInput(Keyboard& kbd, Mouse& mouse);
 };
 

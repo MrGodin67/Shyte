@@ -24,16 +24,16 @@ NewGame::NewGame()
 ReturnType NewGame::OnMouseClick(const Vec2i & mousePos)
 {
 	ReturnType type;
-	
+	type.type = MENU_TYPE_NEW_GAME;
 	if (m_buttons[0].Contains(mousePos))
 	{
-		type.type = RETURN_NEW_BACK;
+		type.result = RETURN_NEW_BACK;
 		m_selectedPlayer = nullptr;
 	}
 
 	if (m_buttons[1].Contains(mousePos) && m_selectedPlayer)
 	{
-		type.type = RETURN_NEW_DONE;
+		type.result = RETURN_NEW_DONE;
 		type.data = &m_selectedPlayer->data;
 		
 	}
