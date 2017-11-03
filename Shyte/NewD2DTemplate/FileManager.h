@@ -27,5 +27,6 @@ public:
 	FileManager() = default;
 	static void WriteLevelData(const char* filename, _LevelFileData& data);
 	static void ReadLevelData(const char* filename, _LevelFileData& data);
-	static void WritePlayerData(const char* filename, PlayerData& data);
+	static void WritePlayerData(const char* filename, struct MainPlayerData& data);
+	static void ReadPlayerData(const char* filename, struct MainPlayerData& data);
 };

@@ -10,6 +10,7 @@
 #define RETURN_NEW_BACK 5
 #define RETURN_NEW_DONE 6
 #define RETURN_CONTINUE 7
+#define RETURN_ENTER 8
 #define RETURN_NONE 0
 
 static  D2D1_COLOR_F SELECT_COLOR_GREEN = D2D1::ColorF(0.0f, 1.0f, 0.0f, 0.5f);
@@ -17,7 +18,7 @@ static  D2D1_COLOR_F SELECT_COLOR_RED = D2D1::ColorF(1.0f, 0.0f, 0.0f, 0.5f);
 static  D2D1_COLOR_F SELECT_COLOR_BLUE = D2D1::ColorF(0.0f, 0.0f, 1.0f, 0.5f);
 static  D2D1_COLOR_F FULL_COLOR_WHITE = D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f);
 
-struct MouseReturnType
+struct ReturnType
 {
 	int type = RETURN_NONE;
 	int result = RETURN_NONE;
@@ -28,9 +29,9 @@ class UserInterface
 
 public:
 	
-	virtual MouseReturnType OnMouseClick(const Vec2i& mousePos) = 0;
-	virtual MouseReturnType OnMouseMove(const Vec2i& mousePos) = 0;
-	virtual void OnKeyPress(unsigned char& key) = 0;
+	virtual ReturnType OnMouseClick(const Vec2i& mousePos) = 0;
+	virtual ReturnType OnMouseMove(const Vec2i& mousePos) = 0;
+	virtual ReturnType OnKeyPress(unsigned char& key) = 0;
 	virtual void Draw(class Graphics& gfx) = 0;
 	
 	

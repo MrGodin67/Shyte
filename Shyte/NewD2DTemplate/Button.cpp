@@ -6,16 +6,17 @@ Button::Button(RectF frame, ID2D1Bitmap * image, int returnType)
 {
 	m_returnType.type = returnType;
 }
-MouseReturnType Button::OnMouseClick(const Vec2i & mousePos)
+ReturnType Button::OnMouseClick(const Vec2i & mousePos)
 {
 	if (m_frame.Contains(mousePos))
 		return m_returnType;
 
-	return MouseReturnType();
+	return ReturnType();
 }
 
-void Button::OnKeyPress(unsigned char & key)
+ReturnType Button::OnKeyPress(unsigned char & key)
 {
+	return ReturnType();
 }
 
 void Button::Draw(Graphics & gfx)

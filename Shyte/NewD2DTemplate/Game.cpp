@@ -42,6 +42,7 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 {
 	
 	Mouse::Event mouse_event = window.mouse.Read();
+	Keyboard::Event kbd_event = window.kbd.ReadKey();
 	
 	switch (m_gameState)
 	{
@@ -69,7 +70,7 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	case _GameState::paused:
 	{
 		m_currentBackgroundColor = m_backgroundColors[0];
-		HandleUserInterface(mouse_event);
+		HandleUserInterface(mouse_event,kbd_event);
 	}
 	break;
 	}
@@ -97,9 +98,6 @@ HRESULT Game::RenderScene()
 		{
 			m_currLevel->Draw(gfx);
 			m_cam.Rasterize(m_player->GetDrawable());
-		
-			
-			DrawLight();
 		}break;
 		case _GameState::main:
 		{
@@ -140,6 +138,7 @@ void Game::LoadImages()
 	data.emplace_back("level1", L"assets\\level1.png", 64.0f, 64.0f);
 	data.emplace_back("start_screen", L"assets\\startscreen.png", 48.0f, 16.0f);
 	data.emplace_back("paused_screen", L"assets\\pausedscreen.png", 48.0f, 16.0f);
+	data.emplace_back("input_screen", L"assets\\inputscreen.png", 48.0f, 16.0f);
 	data.emplace_back("new_game", L"assets\\new_game.png", 512.0f, 512.0f);
 	data.emplace_back("light", L"assets\\light.png", 512.0f, 512.0f);
 	m_textureHandler->LoadImages(data);
@@ -170,6 +169,7 @@ void Game::InitMenus()
 	m_menus["start_screen"] = std::make_unique<StartScreen>();
 	m_menus["paused_screen"] = std::make_unique<PausedScreen>();
 	m_menus["new_game"] = std::make_unique<NewGame>();
+	m_menus["user_input"] = std::make_unique<UserInput>();
 	m_currentMenu = m_menus["start_screen"].get();
 }
 
@@ -248,11 +248,23 @@ void Game::ConstructLevelsFromTextFile(std::string mapFilename)
 
 
 
-void Game::HandleUserInterface(Mouse::Event mouse_event)
+void Game::HandleUserInterface(Mouse::Event& mouse_event, Keyboard::Event& kbd_event)
 {
-	MouseReturnType result;
 	if (!m_currentMenu)
 		return;
+	
+	if (kbd_event.IsPress())
+	{
+		unsigned char key = kbd_event.GetCode();
+		ReturnType result_key = m_currentMenu->OnKeyPress(key);
+		if (result_key.type == RETURN_ENTER)
+		{
+			m_userName = *(std::string*)result_key.data;
+			m_currentMenu = m_menus["new_game"].get();
+		}
+	}
+	ReturnType result;
+	
 	if (mouse_event.LeftIsPressed())
 	{
 	
@@ -279,11 +291,13 @@ void Game::HandleUserInterface(Mouse::Event mouse_event)
 			break;
 		case RETURN_NEW:
 			m_previousMenu = m_currentMenu;
-			m_currentMenu = m_menus["new_game"].get();
+			
+			m_currentMenu = m_menus["user_input"].get();
 			break;
 		case RETURN_NEW_DONE:
 		{
 			PlayerData* data = (PlayerData*)result.data;
+			sprintf_s(data->username, "%s", m_userName.c_str());
 			CreatePlayer(data);
 			m_gameState = _GameState::running;
 

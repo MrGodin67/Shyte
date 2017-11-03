@@ -18,6 +18,7 @@
 #include "NewGame.h"
 #include "coredata.h"
 #include "PausedScreen.h"
+#include "UserInput.h"
 
 
 class Game
@@ -45,6 +46,7 @@ private:
 		RectF(0.2f,0.4f,0.2f,1.0f)
 	};
 	
+	std::string m_userName;
 public:
 	Game(class Direct3DWindow& wnd);
 	~Game();
@@ -65,6 +67,6 @@ private:
 	void InitMenus();
 	void CreateLevel(std::string mapFilename);
 	void ConstructLevelsFromTextFile(std::string mapFilename);
-	void HandleUserInterface(Mouse::Event mouse_event);
+	void HandleUserInterface(Mouse::Event& mouse_event,Keyboard::Event& kbd_event);
 	void DrawLight();
 };

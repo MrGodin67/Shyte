@@ -21,9 +21,9 @@ PausedScreen::~PausedScreen()
 {
 }
 
-MouseReturnType PausedScreen::OnMouseClick(const Vec2i & mousePos)
+ReturnType PausedScreen::OnMouseClick(const Vec2i & mousePos)
 {
-	MouseReturnType type;
+	ReturnType type;
 
 	if (m_buttons[0].Contains(mousePos))
 		type.type = RETURN_RESUME;
@@ -33,9 +33,9 @@ MouseReturnType PausedScreen::OnMouseClick(const Vec2i & mousePos)
 	return type;
 }
 
-MouseReturnType PausedScreen::OnMouseMove(const Vec2i & mousePos)
+ReturnType PausedScreen::OnMouseMove(const Vec2i & mousePos)
 {
-	MouseReturnType result;
+	ReturnType result;
 	for (int c = 0; c < 2; c++)
 	{
 		if (m_buttons[c].Contains(mousePos))
@@ -48,9 +48,9 @@ MouseReturnType PausedScreen::OnMouseMove(const Vec2i & mousePos)
 	return result;
 }
 
-void PausedScreen::OnKeyPress(unsigned char & key)
+ReturnType PausedScreen::OnKeyPress(unsigned char & key)
 {
-	
+	return ReturnType();
 }
 
 void PausedScreen::Draw(Graphics & gfx)

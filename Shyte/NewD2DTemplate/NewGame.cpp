@@ -21,9 +21,9 @@ NewGame::NewGame()
 	sprintf_s(m_players[3].data.name, "%s", "colin");
 }
 
-MouseReturnType NewGame::OnMouseClick(const Vec2i & mousePos)
+ReturnType NewGame::OnMouseClick(const Vec2i & mousePos)
 {
-	MouseReturnType type;
+	ReturnType type;
 	
 	if (m_buttons[0].Contains(mousePos))
 	{
@@ -48,9 +48,9 @@ MouseReturnType NewGame::OnMouseClick(const Vec2i & mousePos)
 	return type;
 }
 
-MouseReturnType NewGame::OnMouseMove(const Vec2i & mousePos)
+ReturnType NewGame::OnMouseMove(const Vec2i & mousePos)
 {
-	MouseReturnType result;
+	ReturnType result;
 	
 	if (m_selectedPlayer)
 	{
@@ -72,8 +72,9 @@ MouseReturnType NewGame::OnMouseMove(const Vec2i & mousePos)
 	return result;
 }
 
-void NewGame::OnKeyPress(unsigned char & key)
+ReturnType NewGame::OnKeyPress(unsigned char & key)
 {
+	return ReturnType();
 }
 
 void NewGame::Draw(Graphics & gfx)

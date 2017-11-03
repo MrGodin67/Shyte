@@ -123,9 +123,6 @@
     <ClCompile Include="StringHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>Objects\Entity</Filter>
     </ClCompile>
@@ -143,6 +140,12 @@
     </ClCompile>
     <ClCompile Include="FileManager.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Objects\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInput.cpp">
+      <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -251,9 +254,6 @@
     <ClInclude Include="Entity.h">
       <Filter>Objects\Entity</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="EntityState.h">
       <Filter>Objects\Entity\State</Filter>
     </ClInclude>
@@ -279,6 +279,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PausedScreen.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Objects\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInput.h">
       <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>

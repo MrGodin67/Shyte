@@ -21,7 +21,7 @@ public:
 	void SetTransparency(float& t);
 	static float Width();
 	static float Height();
-	bool Passable() { return m_passable; }
+	bool Passable();
 	RectF CollisionRect();
 
 };

@@ -44,6 +44,11 @@ float Tile::Height()
 	return m_height;
 }
 
+bool Tile::Passable()
+{
+	return m_passable;
+}
+
 RectF Tile::CollisionRect()
 {
 	return m_collisionRect;

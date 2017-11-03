@@ -5,12 +5,18 @@
 #include "EntityState.h"
 struct PlayerData
 {
+	char username[255];
 	char name[255];
 	int hit_points;
 	int current_level;
 	int numbPotions;
 	int numbKeys;
 	int exp_points;
+};
+struct MainPlayerData
+{
+	PlayerData data;
+	_CoreData core;
 };
 class Player :
 	public Entity

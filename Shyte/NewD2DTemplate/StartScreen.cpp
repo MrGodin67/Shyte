@@ -21,9 +21,9 @@ StartScreen::~StartScreen()
 {
 }
 
-MouseReturnType StartScreen::OnMouseClick(const Vec2i & mousePos)
+ReturnType StartScreen::OnMouseClick(const Vec2i & mousePos)
 {
-	MouseReturnType type;
+	ReturnType type;
 	
 	if (m_buttons[0].Contains(mousePos))
 		type.type = RETURN_CONTINUE;
@@ -35,8 +35,9 @@ MouseReturnType StartScreen::OnMouseClick(const Vec2i & mousePos)
 	return type;
 }
 
-void StartScreen::OnKeyPress(unsigned char & key)
+ReturnType StartScreen::OnKeyPress(unsigned char & key)
 {
+	return ReturnType();
 }
 
 void StartScreen::Draw(Graphics& gfx)
@@ -57,9 +58,9 @@ void StartScreen::Draw(Graphics& gfx)
 	gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[2].ToD2D(), FULL_COLOR_WHITE);*/
 }
 
-MouseReturnType StartScreen::OnMouseMove(const Vec2i & mousePos)
+ReturnType StartScreen::OnMouseMove(const Vec2i & mousePos)
 {
-	MouseReturnType result;
+	ReturnType result;
 	for (int c = 0; c < 3; c++)
 	{
 		if (m_buttons[c].Contains(mousePos))
