@@ -52,7 +52,7 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	{
 	case _GameState::running:
 	{
-		m_currentBackgroundColor = m_backgroundColors[1];
+		m_currentBackgroundColor = m_backgroundColors[0];
 		if (window.kbd.KeyIsPressed(VK_ESCAPE))
 		{
 			m_userInterfaceManager->SetCurrentScreen(std::string("paused_screen"));
@@ -98,6 +98,8 @@ HRESULT Game::RenderScene()
 			m_backGroundImage->Draw(m_cam, gfx);
 			m_currLevel->Draw(gfx);
 			m_cam.Rasterize(m_player->GetDrawable());
+			gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), gfx.GetD2DLayerViewPort()->GetViewRect(),
+				D2D1::ColorF(1.0f,1.0f,1.0f,1.0f));
 			
 		}break;
 		case _GameState::main:

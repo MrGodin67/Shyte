@@ -126,9 +126,7 @@ void Graphics::DrawSprite(D2D1_MATRIX_3X2_F &trans, D2D1_RECT_F &PosSize, ID2D1B
 	D2D1_RECT_F *ClipRect, float Opacity,D2D1_BITMAP_INTERPOLATION_MODE InterpMode)
 {
 	m_pD2DRenderTarget->SetTransform(trans);
-	//m_pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Translation(-viewRect.left,- viewRect.top));
 	m_pD2DRenderTarget->DrawBitmap(pSprite, PosSize, Opacity, InterpMode, ClipRect);
-	//m_pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Translation(viewRect.left, viewRect.right));
 	//reset transform so we have no carry-over to next sprite
 	m_pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 }
