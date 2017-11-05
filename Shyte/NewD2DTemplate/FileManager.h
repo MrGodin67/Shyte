@@ -31,10 +31,10 @@ class FileManager
 {
 public:
 	FileManager() = default;
-	static void WriteLevelData(const char* filename, _LevelFileData& data);
-	static void ReadLevelData(const char* filename, _LevelFileData& data);
-	static void WritePlayerData(const char* filename, struct MainPlayerData& data);
-	static void ReadPlayerData(const char* filename, struct MainPlayerData& data);
-	static void WriteGameData(const char* filename, _GameData& data);
-	static void ReadGameData(const char* filename, _GameData& data);
+	static bool WriteLevelData(const char* filename, _LevelFileData& data);
+	static bool ReadLevelData(const char* filename, _LevelFileData& data);
+	static bool WritePlayerData(const char* filename, struct MainPlayerData& data);
+	static bool ReadPlayerData(const char* filename, struct MainPlayerData& data);
+	static bool WriteGameData(const char* filename, _GameData& data);
+	static bool ReadGameData(const char* filename, _GameData& data);
 };

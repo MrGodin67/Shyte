@@ -11,12 +11,7 @@ Game::Game(Direct3DWindow & wnd)
 		true, FULL_SCREEN,1000.0f,0.01f),
 	m_cam(&gfx,(float)wnd.ScreenWidth(), (float)wnd.ScreenHeight())
 {
-	if (DXStringHandler::DXDoesFileExist("data\\gm.bin"))
-	{
-		FileManager::ReadGameData("data\\gm.bin",m_gameData);
-		for (int c = 0; c < m_gameData.numbUsers; c++)
-			m_users.push_back(m_gameData.userNames[c]);
-	}
+	LoadFileData();
 	Locator::SetScreenDimensions(wnd.ScreenWidth(), wnd.ScreenHeight());
 	ConstructLevelsFromTextFile("map001.txt",0);
 	ConstructLevelsFromTextFile("map002.txt", 1);
@@ -33,6 +28,8 @@ Game::~Game()
 
 bool Game::Play(const float& deltaTime)
 {
+	if (window.m_endApp)// set via windows message hanldler WM_CLOSE event
+		EndApp();
 	HRESULT hr;
 	if (FAILED(hr = ConstructScene(deltaTime))) 
 	{ return false; }
@@ -118,8 +115,15 @@ HRESULT Game::RenderScene()
 	return hr;
 }
 
-void Game::EndApp()
+void Game::EndApp(bool showMsg,std::wstring* msg)
 {
+	if (showMsg)
+	{
+		std::wstring text = *msg;
+		MessageBox(window.WindowHandle(), text.c_str(), L"Fatal Error", MB_OK);
+	}
+	m_player->Save();
+	FileManager::WriteGameData("data\\gm.bin", m_gameData);
 	PostQuitMessage(0);
 }
 
@@ -157,10 +161,15 @@ void Game::LoadImages()
 
 void Game::CreatePlayer(MainPlayerData* data)
 {
-	
+	m_gameData.numbUsers++;
+	if (m_gameData.numbUsers >= 9)
+		m_gameData.numbUsers = 9;
+
+
+	sprintf_s(m_gameData.userNames[m_gameData.numbUsers], "%s", data->data.username);
+	FileManager::WriteGameData("data\\gm.bin", m_gameData);
 	m_player = std::make_unique<Player>(data->data,data->core);
 	CreateLevel("data\\levels\\map001.bin");
-	//int& maxvalue, RectF mainFrame, RectF& meter_color, RectF& back_color, RectF& text_color,std::string textFont
 	
 	
 }
@@ -169,6 +178,26 @@ void Game::InitMenus()
 {
 	m_userInterfaceManager = std::make_unique<UserInterfaceManager>();
 	m_userInterfaceManager->InitializeCurrentUsers(m_users);
+}
+
+void Game::LoadFileData()
+{
+	bool result = DXStringHandler::DXDoesFileExist("data\\gm.bin");
+	if (result)
+	{
+		result = FileManager::ReadGameData("data\\gm.bin", m_gameData);
+		assert(result == true);
+		if (result)
+		{
+			for (int c = 0; c < m_gameData.numbUsers; c++)
+				m_users.push_back(m_gameData.userNames[c]);
+		}
+		else
+		{
+			std::wstring msg = L"Fatal Error!, Unable to load gm.bin file!\nThe application will now close";
+			EndApp(true, &msg);
+		}
+	}
 }
 
 void Game::CreateLevel(std::string mapFilename)
@@ -285,17 +314,14 @@ void Game::HandleUserInterface(Mouse::Event& mouse_event, Keyboard::Event& kbd_e
 			m_gameState = _GameState::running;
 			break;
 		case RETURN_RESULT_EXIT:
+		{
 			EndApp();
+		}
 			break;
 		case RETURN_RESULT_CREATE_NEW_GAME:
 		{
 			MainPlayerData* data = (MainPlayerData*)result.data;
-			if (m_gameData.numbUsers >= 9)
-				m_gameData.numbUsers = 9;
-			m_gameData.numbUsers++;
-
-			sprintf_s(m_gameData.userNames[m_gameData.numbUsers], "%s", data->data.username);
-			FileManager::WriteGameData("data\\gm.bin", m_gameData);
+			
 			CreatePlayer(data);
 			m_gameState = _GameState::running;
 

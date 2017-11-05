@@ -195,6 +195,11 @@ LRESULT CALLBACK Direct3DWindow::MessageHandler(HWND hwnd, UINT umsg, WPARAM wpa
 	return DefWindowProc(hwnd, umsg, wparam, lparam);
 }
 
+void Direct3DWindow::SetEndApp(bool val)
+{
+	m_endApp = val;
+}
+
 
 void Direct3DWindow::InitializeWindows()
 {
@@ -326,7 +331,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT umessage, WPARAM wparam, LPARAM lparam)
 	// Check if the window is being closed.
 	case WM_CLOSE:
 	{
-		PostQuitMessage(0);
+		ApplicationHandle->SetEndApp(true);
+		//PostQuitMessage(0);
 		return 0;
 	}
 

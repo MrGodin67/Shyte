@@ -44,6 +44,7 @@ public:
 	virtual RectF GetCollisionRect(Vec2f& offset_translation) { return RectF(); };
 	virtual void SetState(EntityStates state) { m_currentState = state; };
 	virtual Vec2f GetCenter() = 0;
+	virtual void UpdatePosition(Vec2f& pos) = 0;
 	_EntityType Type() { return m_type; }
 	
 	

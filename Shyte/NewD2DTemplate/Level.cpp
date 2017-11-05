@@ -147,13 +147,15 @@ void Level::DoCollision(Entity * ent)
 	pTile = GetTileCollisionRect(cRect_ent,Vec2i(Sign(ent->GetPosition().x),Sign(ent->GetPosition().y)));
 	if(pTile != nullptr)
 	{
-		RectF tileCollisionRect = pTile->CollisionRect();
+
+	    RectF tileCollisionRect = pTile->CollisionRect();
 		if (cRect_ent.Overlaps(tileCollisionRect))
 		{
 			CorrectCollision(ent, tileCollisionRect);
-			
+
 		}
 	}
+	
 }
 
 void Level::DoSupported(Entity * ent)
@@ -235,6 +237,7 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 			ent->CoreData()->direction.Set(MOVE_LEFT);
 			
 		}
+		ent->UpdatePosition(ent->CoreData()->position);
 		return;
 	}
 	if (vel.x > 0 && vel.y <= 0)
@@ -266,6 +269,7 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 			
 			
 		}
+		ent->UpdatePosition(ent->CoreData()->position);
 		return;
 	}
 
@@ -293,6 +297,7 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 			
 			
 		}
+		ent->UpdatePosition(ent->CoreData()->position);
 		return;
 	}
 	if (vel.x <= 0 && vel.y <= 0)
@@ -324,6 +329,7 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 			
 			
 		}
+		ent->UpdatePosition(ent->CoreData()->position);
 		return;
 	}
 	

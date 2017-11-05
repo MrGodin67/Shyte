@@ -21,7 +21,7 @@ class Game
 	
 	class Direct3DWindow& window;
 	Graphics gfx;
-	void EndApp();
+	void EndApp(bool showMsg = false, std::wstring* msg = nullptr);
 	Camera m_cam;
 	_GameData m_gameData;
 	_GameState m_gameState = _GameState::main;
@@ -62,6 +62,7 @@ private:
 	void LoadImages();
 	void CreatePlayer(MainPlayerData* data);
 	void InitMenus();
+	void LoadFileData();
 	void CreateLevel(std::string mapFilename);
 	void ConstructLevelsFromTextFile(std::string mapFilename,int levelIndex);
 	void HandleUserInterface(Mouse::Event& mouse_event,Keyboard::Event& kbd_event);

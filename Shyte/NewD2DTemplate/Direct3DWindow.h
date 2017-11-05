@@ -30,7 +30,7 @@ public:
 	void ScreenHalfExtents(float& x, float& y);
 	HWND& WindowHandle();
 	LRESULT CALLBACK MessageHandler(HWND, UINT, WPARAM, LPARAM);
-
+	void SetEndApp(bool val);
 private:
 	bool Frame();
 	void InitializeWindows();
@@ -43,7 +43,7 @@ private:
 	HWND m_hwnd;
 	int m_screenHeight;
 	int m_screenWidth;
-	
+	bool m_endApp = false;
 	Mouse mouse;
 	Keyboard kbd;
 	InputManager m_input;
