@@ -131,8 +131,10 @@ void Level::Draw(Graphics& gfx)
 				m_cam.Rasterize(tile->GetDrawable());
 		}
 	}
-	m_healthMeter->Draw(gfx);
-	m_expMeter->Draw(gfx);
+	gfx.GetD2DLayerViewPort()->Rasterize(m_healthMeter->GetDrawable());
+	gfx.GetD2DLayerViewPort()->Rasterize(m_expMeter->GetDrawable());
+	
+
 }
 
 Vec2f Level::InitialPlayerPosition()

@@ -455,7 +455,7 @@ HRESULT Direct3D::InvokeD2DDeviceResources()
 			return result;
 		}
 
-
+		//result = m_pD2DRenderTarget->CreateLayer(NULL, &pLayer);
 		result = m_pD2DRenderTarget->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::LimeGreen), &m_pD2DWhiteBrush);
 		if (FAILED(result)) {
 			return result;
@@ -524,6 +524,7 @@ Direct3D::~Direct3D()
 	}
 	SAFE_RELEASE(m_pRenderTargetView);
 	SAFE_RELEASE(m_depthStencilView);
+	
 	ReleaseD2DDeviceResources();
 }
 

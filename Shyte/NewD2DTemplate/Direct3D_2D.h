@@ -64,7 +64,7 @@ protected:
 	ComPtr<ID3D11BlendState> m_alphaEnableBlendingState;
 	ComPtr<ID3D11BlendState> m_alphaDisableBlendingState;
 	ComPtr<ID3D11BlendState> m_alphaEnableBlendingState2;
-
+	
 protected:
 	
 	ComPtr<ID2D1Factory> m_pD2DFactory;

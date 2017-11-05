@@ -23,7 +23,7 @@ private:
 	Vec2f m_pos;
 	Vec2f m_center;
 	Vec2f m_scroll_pos;
-	RectF m_mapFrame;
+    RectF m_mapFrame;
 	RectF m_viewFrame;
 	float m_screen_width, m_screen_height;
 };

@@ -9,8 +9,9 @@ Game::Game(Direct3DWindow & wnd)
 	window(wnd),
 	gfx(wnd.ScreenWidth(),wnd.ScreenHeight(),wnd.WindowHandle(),
 		true, FULL_SCREEN,1000.0f,0.01f),
-	m_cam(&gfx,(float)wnd.ScreenWidth(), (float)wnd.ScreenHeight())
+	m_cam(gfx.GetD2DLayerViewPort(), gfx.GetD2DLayerViewPort()->Width() , gfx.GetD2DLayerViewPort()->Height())
 {
+	
 	LoadFileData();
 	Locator::SetScreenDimensions(wnd.ScreenWidth(), wnd.ScreenHeight());
 	ConstructLevelsFromTextFile("map001.txt",0);
@@ -60,8 +61,6 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 		}
 
 		m_player->HandleInput(window.kbd, window.mouse);
-
-		
 		m_currLevel->Update(deltaTime);
 		m_cam.UpdatePosition(m_player->GetPosition());
 	}
@@ -122,7 +121,8 @@ void Game::EndApp(bool showMsg,std::wstring* msg)
 		std::wstring text = *msg;
 		MessageBox(window.WindowHandle(), text.c_str(), L"Fatal Error", MB_OK);
 	}
-	m_player->Save();
+	if(m_player.get())
+	   m_player->Save();
 	FileManager::WriteGameData("data\\gm.bin", m_gameData);
 	PostQuitMessage(0);
 }
@@ -207,6 +207,7 @@ void Game::CreateLevel(std::string mapFilename)
 	m_currLevel = std::make_unique<Level>(m_cam,*m_player.get());
 	m_currLevel->Initialize(mapFilename);
 	m_backGroundImage->SetColorIndex(m_currLevel->CurrentLevelIndex());
+	
 }
 
 void Game::ConstructLevelsFromTextFile(std::string mapFilename,int levelIndex)

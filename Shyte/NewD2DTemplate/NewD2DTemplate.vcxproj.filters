@@ -58,6 +58,9 @@
     <Filter Include="UI\Tools">
       <UniqueIdentifier>{e534e515-bec1-42d6-8c42-54b325a86ec8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\View Port">
+      <UniqueIdentifier>{beebb45f-7b4c-4572-8f91-9684f3b5fafc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -304,6 +307,9 @@
     </ClInclude>
     <ClInclude Include="UIManager.h">
       <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewPort.h">
+      <Filter>Objects\View Port</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

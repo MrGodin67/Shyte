@@ -230,6 +230,7 @@
     <ClInclude Include="Utils.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="VecRect.h" />
+    <ClInclude Include="ViewPort.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="map001.txt" />

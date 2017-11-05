@@ -10,8 +10,11 @@ Graphics::Graphics(int screenWidth,int screenHeight,HWND & hwnd,
 	HRESULT hr;
 	hr = CreateTextObjects();
 	assert(hr == S_OK);
+	
 	Locator::SetD2DRenderTarget(m_pD2DRenderTarget);
 	Locator::SetTextManager(&m_TextFactory);
+
+	m_viewPort = std::make_unique<ViewPort>(this,Vec2f(800.0f, 600.0f), Vec2f(GetViewport().Width, GetViewport().Height));
 }
 
 HRESULT Graphics::BeginScene(float red, float green, float blue, float alpha)
@@ -26,6 +29,8 @@ HRESULT Graphics::BeginScene(float red, float green, float blue, float alpha)
 	{
 		m_pD2DRenderTarget->BeginDraw();
 		m_pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+		m_viewPort->BeginSceen(m_pD2DWhiteBrush);
+
 	}
 	
 	return hr;
@@ -35,6 +40,7 @@ HRESULT Graphics::EndScene()
 {
 
 	HRESULT hr = S_OK;
+	m_viewPort->EndSceen();
 	hr = m_pD2DRenderTarget->EndDraw();
 
 	if (hr == D2DERR_RECREATE_TARGET)
@@ -91,9 +97,9 @@ void Graphics::DrawLine(D2D1_MATRIX_3X2_F &matTrans, D2D1_POINT_2F start, D2D1_P
 	m_pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 };
 //==============================================================================
-void Graphics::DrawFilledScreenRectangle(D2D1_RECT_F& rect, D2D1_COLOR_F& color)
+void Graphics::DrawFilledScreenRectangle(D2D1_RECT_F& rect, D2D1_COLOR_F& color, D2D1::Matrix3x2F& matrix)
 {
-	m_pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
+	m_pD2DRenderTarget->SetTransform(matrix);
 	
 	m_pD2DWhiteBrush->SetColor({ color.r,color.g,color.b,color.a });
 	m_pD2DRenderTarget->FillRectangle(&rect, m_pD2DWhiteBrush);
@@ -120,18 +126,19 @@ void Graphics::DrawSprite(D2D1_MATRIX_3X2_F &trans, D2D1_RECT_F &PosSize, ID2D1B
 	D2D1_RECT_F *ClipRect, float Opacity,D2D1_BITMAP_INTERPOLATION_MODE InterpMode)
 {
 	m_pD2DRenderTarget->SetTransform(trans);
+	//m_pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Translation(-viewRect.left,- viewRect.top));
 	m_pD2DRenderTarget->DrawBitmap(pSprite, PosSize, Opacity, InterpMode, ClipRect);
-
+	//m_pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Translation(viewRect.left, viewRect.right));
 	//reset transform so we have no carry-over to next sprite
 	m_pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 }
 
 void Graphics::RenderText(LPWSTR String, IDWriteTextFormat *pFormat,
-	const D2D1_RECT_F &DrawRect, D2D1_COLOR_F &Color)
+	const D2D1_RECT_F &DrawRect, D2D1_COLOR_F &Color, D2D1_MATRIX_3X2_F &trans )
 {
 	
 	m_pD2DWhiteBrush->SetColor(Color);
-
+	m_pD2DRenderTarget->SetTransform(trans);
 	UINT strLen = lstrlen(String);
 	m_pD2DRenderTarget->DrawTextW(String, strLen, pFormat, DrawRect, m_pD2DWhiteBrush);
 }

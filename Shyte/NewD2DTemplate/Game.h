@@ -15,7 +15,7 @@
 #include "randomizer.h"
 #include "FileManager.h"
 #include "UIManager.h"
-
+#include "ViewPort.h"
 class Game
 {
 	

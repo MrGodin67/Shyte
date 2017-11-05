@@ -62,5 +62,9 @@ public:
 	void DoSupported(Entity* ent);
 	void Update(const float& dt);
 	int CurrentLevelIndex();
+	Vec2f GetWorldSize() {
+		return{ m_currentLevelData.tileDimensions.x * m_currentLevelData.rowsColumns.x,
+                m_currentLevelData.tileDimensions.y + m_currentLevelData.rowsColumns.y };
+	}
 	
 };
