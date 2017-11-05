@@ -9,14 +9,14 @@ Level::Level(Camera & cam,Player& player)
 void Level::Initialize(std::string  mapFilename)
 {
 	
-	m_healthMeter = std::make_unique<Meter>(m_player.CoreData()->hit_points, RectF(30.0f, 30.0f, 200.0f, 45.0f),
+	m_healthMeter = std::make_unique<Meter>(m_player.CoreData()->max_hitpoints, RectF(30.0f, 30.0f, 200.0f, 45.0f),
 		RectF(1.0f, 0.0f, 0.0f, 1.0f), RectF(0.0f, 1.0f, 0.0f, 0.5f),
 		RectF(1.0f, 1.0f, 1.0f, 1.0f), "Tahoma12");
 	std::string str = "Health";
 	m_healthMeter->SetCaption(str);
 	{
-		int val = 100;
-		m_expMeter = std::make_unique<Meter>(val, RectF(220.0f, 30.0f, 300.0f, 45.0f),
+		
+		m_expMeter = std::make_unique<Meter>(m_player.CoreData()->max_hitpoints, RectF(220.0f, 30.0f, 300.0f, 45.0f),
 			RectF(1.0f, 0.0f, 0.0f, 1.0f), RectF(0.0f, 1.0f, 0.0f, 0.5f),
 			RectF(1.0f, 1.0f, 1.0f, 1.0f), "Tahoma12");
 		std::string str = "Experience Level [ "+std::to_string(m_player.CoreData()->exp_level) +" ]";
@@ -95,11 +95,12 @@ void Level::Initialize(std::string  mapFilename)
 
 			}
 			break;
-			case 7:
+			case 7:// exit point
 			{
 				clipIndex = m_currentLevelData.levelIndex * image->Columns() + m_currentLevelData.map[r][c];
 				passable = true;
-
+				m_exitRect = { m_currentLevelData.exitPos.x,m_currentLevelData.exitPos.y,
+				m_currentLevelData.exitPos.x + Tile::Width() ,m_currentLevelData.exitPos.y + Tile::Height() };
 			}
 			break;
 			}
@@ -176,7 +177,7 @@ void Level::DoSupported(Entity * ent)
 
 }
 
-void Level::Update(const float & dt)
+bool Level::Update(const float & dt)
 {
 	// get index range for drawing visible tiles
 	DoCollision(&m_player);
@@ -203,6 +204,14 @@ void Level::Update(const float & dt)
 	Vec2i dims = { Locator::ScreenWidth<int>() , Locator::ScreenHeight<int>() };
 	dims /= (int)m_currentLevelData.tileDimensions.x;
 	m_endDrawIndex = m_startDrawIndex + Vec2i(dims.x + 1, dims.y + 1);
+	if (m_exitRect.Contains(m_player.GetCenter()))
+	{
+		m_player.CoreData()->level_index++;
+		if (m_player.CoreData()->level_index >= m_maxLevels)
+			m_player.CoreData()->level_index = 0;
+		return false;
+	}
+	return true;
 }
 
 int Level::CurrentLevelIndex()

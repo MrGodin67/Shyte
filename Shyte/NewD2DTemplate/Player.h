@@ -28,6 +28,7 @@ public:
 	virtual Vec2f GetCenter()override;
 	virtual void UpdatePosition(Vec2f& pos)override;
 	void HandleInput(Keyboard& kbd, Mouse& mouse);
+	int CurrentLevel();
 	void Save();
 };
 

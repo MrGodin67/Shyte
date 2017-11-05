@@ -12,6 +12,7 @@ struct _LevelFileData
 {
 	Vec2f tileDimensions;
 	Vec2f playerPos;
+	Vec2f exitPos;
 	Vec2i rowsColumns;
 	float surfaceFriction;
 	int levelIndex;

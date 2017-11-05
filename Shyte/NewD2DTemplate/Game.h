@@ -33,9 +33,7 @@ private:
 	std::unique_ptr<Level> m_currLevel;
 	std::unique_ptr<BackGround> m_backGroundImage;
 	
-	std::unordered_map<std::string, std::unique_ptr<UserInterface>> m_menus;
-	UserInterface* m_currentMenu = nullptr;
-	UserInterface* m_previousMenu = nullptr;
+	
 	RectF m_currentBackgroundColor;
 	RectF m_backgroundColors[2] =
 	{
@@ -45,6 +43,7 @@ private:
 	
 	std::string m_userName;
 	std::vector<std::string> m_users;
+	std::vector<std::string> m_mapFileNames;
 public:
 	Game(class Direct3DWindow& wnd);
 	~Game();
@@ -61,6 +60,7 @@ private:
 	void LoadAudio();
 	void LoadImages();
 	void CreatePlayer(MainPlayerData* data);
+	void CreatePlayerFromFile(std::string filename);
 	void InitMenus();
 	void LoadFileData();
 	void CreateLevel(std::string mapFilename);

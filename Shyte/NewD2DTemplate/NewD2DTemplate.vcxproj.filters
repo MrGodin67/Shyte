@@ -159,6 +159,9 @@
     <ClCompile Include="UIManager.cpp">
       <Filter>UI</Filter>
     </ClCompile>
+    <ClCompile Include="ViewPort.cpp">
+      <Filter>Objects\View Port</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameState.h">

@@ -19,7 +19,9 @@ Game::Game(Direct3DWindow & wnd)
 	ConstructLevelsFromTextFile("map003.txt", 2);
 	LoadImages();
 	InitMenus();
-	
+	m_mapFileNames.push_back("data\\levels\\map001.bin");
+	m_mapFileNames.push_back("data\\levels\\map002.bin");
+	m_mapFileNames.push_back("data\\levels\\map003.bin");
 }
 
 Game::~Game()
@@ -30,7 +32,19 @@ Game::~Game()
 bool Game::Play(const float& deltaTime)
 {
 	if (window.m_endApp)// set via windows message hanldler WM_CLOSE event
-		EndApp();
+	{
+		if (m_player.get())
+		{
+			m_userInterfaceManager->SetCurrentScreen(std::string("paused_screen"));
+			m_gameState = _GameState::paused;
+			window.m_endApp = false;
+		}
+		else
+		{
+			window.m_endApp = false;
+		}
+		
+	}
 	HRESULT hr;
 	if (FAILED(hr = ConstructScene(deltaTime))) 
 	{ return false; }
@@ -43,6 +57,7 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	
 	Mouse::Event mouse_event = window.mouse.Read();
 	Keyboard::Event kbd_event = window.kbd.ReadKey();
+	// temp save key
 	if (window.kbd.KeyIsPressed('S'))
 	{
 		if (m_player.get())
@@ -61,7 +76,13 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 		}
 
 		m_player->HandleInput(window.kbd, window.mouse);
-		m_currLevel->Update(deltaTime);
+		if (!m_currLevel->Update(deltaTime))
+		{
+			// temp set-up
+			CreateLevel(m_mapFileNames[m_player->CurrentLevel()]);
+			gfx.GetD2DLayerViewPort()->ResetTransparency();
+			return S_OK;
+		};
 		m_cam.UpdatePosition(m_player->GetPosition());
 	}
 	break;
@@ -98,7 +119,7 @@ HRESULT Game::RenderScene()
 			m_backGroundImage->Draw(m_cam, gfx);
 			m_currLevel->Draw(gfx);
 			m_cam.Rasterize(m_player->GetDrawable());
-			gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), gfx.GetD2DLayerViewPort()->GetViewRect(),
+			gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), gfx.GetD2DLayerViewPort()->GetViewRect().ToD2D(),
 				D2D1::ColorF(1.0f,1.0f,1.0f,1.0f));
 			
 		}break;
@@ -132,9 +153,6 @@ void Game::EndApp(bool showMsg,std::wstring* msg)
 void Game::LoadAudio()
 {
 	m_soundFX = std::make_unique<SoundManager>();
-	
-	
-
 }
 
 void Game::LoadImages()
@@ -163,17 +181,32 @@ void Game::LoadImages()
 
 void Game::CreatePlayer(MainPlayerData* data)
 {
-	m_gameData.numbUsers++;
+	
 	if (m_gameData.numbUsers >= 9)
 		m_gameData.numbUsers = 9;
 
-
 	sprintf_s(m_gameData.userNames[m_gameData.numbUsers], "%s", data->data.username);
+	m_gameData.numbUsers++;
 	FileManager::WriteGameData("data\\gm.bin", m_gameData);
 	m_player = std::make_unique<Player>(data->data,data->core);
+	
 	CreateLevel("data\\levels\\map001.bin");
 	
-	
+	m_player->Save();
+}
+
+void Game::CreatePlayerFromFile(std::string filename)
+{
+	MainPlayerData data;
+	if (FileManager::ReadPlayerData(filename.c_str(), data))
+	{
+		if (m_player)
+			m_player.reset();
+
+		m_player = std::make_unique<Player>(data.data, data.core);
+		CreateLevel(m_mapFileNames[m_player->CurrentLevel()]);
+	};
+
 }
 
 void Game::InitMenus()
@@ -277,7 +310,7 @@ void Game::ConstructLevelsFromTextFile(std::string mapFilename,int levelIndex)
 			case 'x':
 			{
 
-				
+				levelData.exitPos = startPos;
 				levelData.map[r][c] = 7;
 
 			}
@@ -313,8 +346,27 @@ void Game::HandleUserInterface(Mouse::Event& mouse_event, Keyboard::Event& kbd_e
 		result = m_userInterfaceManager->OnMouseClick(Vec2i( mouse_event.GetPosX(),mouse_event.GetPosY() ));
 		switch (result.result)
 		{
+		case RETURN_RESULT_CREATE_NEW_FROM_FILE :
+		{
+			std::string* str = (std::string*)result.data;
+			std::string filename = "data\\" + *str + ".bin";
+			CreatePlayerFromFile(filename);
+			m_gameState = _GameState::running;
+		}
+		break;
 		case RETURN_RESULT_RESUME:
 			m_gameState = _GameState::running;
+		
+			break;
+		case RETURN_RESULT_EXIT_GAME:
+		{
+			if (m_player.get())
+			{
+				m_player->Save();
+				m_player.reset();
+			}
+			m_gameState = _GameState::main;
+		}
 			break;
 		case RETURN_RESULT_EXIT:
 		{
@@ -326,6 +378,7 @@ void Game::HandleUserInterface(Mouse::Event& mouse_event, Keyboard::Event& kbd_e
 			MainPlayerData* data = (MainPlayerData*)result.data;
 			
 			CreatePlayer(data);
+			gfx.GetD2DLayerViewPort()->ResetTransparency();
 			m_gameState = _GameState::running;
 
 		}

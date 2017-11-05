@@ -39,7 +39,6 @@ ReturnType UserInterfaceManager::HandleInputScreen(unsigned char& key)
 			if (!DoesUserExist(*str))
 			{
 				m_newUserName = *str;
-				AddUser(*str);
 				m_currentScreen->Enabled(true);
 			}
 			else
@@ -64,7 +63,6 @@ ReturnType UserInterfaceManager::HandleInputScreen(ReturnType & data)
 		if (!DoesUserExist(*str))
 		{
 			m_newUserName = *str;
-			AddUser(*str);
 			m_currentScreen->Enabled(true);
 		}
 		else
@@ -86,19 +84,33 @@ ReturnType UserInterfaceManager::HandleInputScreen(ReturnType & data)
 }
 ReturnType UserInterfaceManager::HandlePausedScreen(ReturnType & data)
 {
-	return ReturnType();
+	ReturnType result = data;
+	switch (result.result)
+	{
+	case RETURN_RESULT_EXIT:
+	{
+	  result.result = RETURN_RESULT_EXIT_GAME;
+	  m_currentScreen = m_screens["start_screen"].get();
+	  m_perviousScreen = nullptr;
+	}
+	}
+	return result;
 }
 ReturnType UserInterfaceManager::HandleSelectUserScreen(ReturnType & data)
 {
-	switch (data.result)
+	ReturnType result = data;
+
+	switch (result.result)
 	{
 	case RETURN_RESULT_BACK:
+		result.result = RETURN_RESULT_CREATE_NEW_FROM_FILE;
+		 
 		break;
 	case RETURN_RESULT_CANCEL:
 		m_currentScreen = m_perviousScreen;
 		m_currentScreen->Enabled(true);
 	}
-	return ReturnType();
+	return result;
 }
 ReturnType UserInterfaceManager::HandleNewGameScreen(ReturnType & data)
 {
@@ -110,6 +122,7 @@ ReturnType UserInterfaceManager::HandleNewGameScreen(ReturnType & data)
 			MainPlayerData* pd = (MainPlayerData*)data.data;
 
 			sprintf_s(pd->data.username, "%s", m_newUserName.c_str());
+			AddUser(m_newUserName);
 			return data;
 		}
 			break;
@@ -150,6 +163,8 @@ void UserInterfaceManager::AddUser(std::string & user)
 	m_users.push_back(user);
 	SelectUsers* sel = (SelectUsers*)m_screens["select_user"].get();
 	sel->SetUsers(m_users);
+	StartScreen* scrn = (StartScreen*)m_screens["start_screen"].get();
+	scrn->EnableContinueButton(true);
 }
 void UserInterfaceManager::Draw(Graphics & gfx)
 {
@@ -201,25 +216,13 @@ ReturnType UserInterfaceManager::OnMouseClick(Vec2i & mousePos)
 		{
 		
 		case MENU_TYPE_START:
-			this->HandleStartScreen(returnResult);
-			break;
+			return HandleStartScreen(returnResult);
 		case MENU_TYPE_NEW_GAME:
-		{
-			ReturnType res = HandleNewGameScreen(returnResult);
-			if (returnResult.result == RETURN_RESULT_CREATE_NEW_GAME)
-			{
-
-			}
-			if (res.result != RETURN_RESULT_NONE)
-				return res;
-		}
-			break;
+			return HandleNewGameScreen(returnResult);
 		case MENU_TYPE_PAUSED:
-			return returnResult;
+			return HandlePausedScreen(returnResult);
 		case MENU_TYPE_SELECT_USER:
-			this->HandleSelectUserScreen(returnResult);
-			break;
-
+			return HandleSelectUserScreen(returnResult);
 		}
 	}
 	return returnResult;

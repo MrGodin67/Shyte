@@ -46,6 +46,7 @@ public:
 	virtual Vec2f GetCenter() = 0;
 	virtual void UpdatePosition(Vec2f& pos) = 0;
 	_EntityType Type() { return m_type; }
+
 	
 	
 	

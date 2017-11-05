@@ -16,6 +16,8 @@ private:
 	_LevelFileData m_currentLevelData;
 	Vec2i m_startDrawIndex;
 	Vec2i m_endDrawIndex;
+	RectF m_exitRect;
+	int m_maxLevels = 3;
 	void CorrectCollision(Entity* ent, RectF tile_Rect);
 	Tile* GetTileVertical(const int& index,const int& dir);
 	Tile* GetTileHorizontal (const int& index, const int& dir);
@@ -60,7 +62,7 @@ public:
 	Vec2f InitialPlayerPosition();
 	void DoCollision(Entity* ent);
 	void DoSupported(Entity* ent);
-	void Update(const float& dt);
+	bool Update(const float& dt);
 	int CurrentLevelIndex();
 	Vec2f GetWorldSize() {
 		return{ m_currentLevelData.tileDimensions.x * m_currentLevelData.rowsColumns.x,

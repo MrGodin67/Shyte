@@ -40,16 +40,16 @@ ReturnType SelectUsers::OnMouseClick(const Vec2i & mousePos)
 		{
 			type.result = RETURN_RESULT_BACK;
 			type.data = &m_selectedUser;
-
+			m_selectedIndex = -1;
 		}
 
 		if (m_buttons[1].Contains(mousePos))
 		{
 			type.result = RETURN_RESULT_CANCEL;
 
-
+			m_selectedIndex = -1;
 		}
-		m_selectedIndex = -1;
+		
 		for (int c = 0; c < m_usersNames.size(); c++)
 		{
 			m_lines[c].selected = false;
@@ -58,9 +58,9 @@ ReturnType SelectUsers::OnMouseClick(const Vec2i & mousePos)
 				m_selectedIndex = c;
 				m_selectedUser = m_usersNames[c];
 				m_selectedRect = m_lines[c].frame;
-				m_selectedRect.left -= 4.0f;
-				m_selectedRect.top -= 4.0f;
-				m_selectedRect.bottom -= 4.0f;
+				m_selectedRect.left -= 1.0f;
+				m_selectedRect.top -= 1.0f;
+				m_selectedRect.bottom -= 1.0f;
 				m_lines[c].selected = true;
 				m_isSelected = true;
 			}

@@ -42,12 +42,13 @@ public:
 	bool boosting = false;
 	int seq_Index = 0;
 	int hit_points = 0;
+	int max_hitpoints = 0;
 	int current_level = 0;
 	int numbPotions = 0;
 	int numbKeys = 0;
 	int exp_points = 0;
 	int exp_level = 0;
-	
+	int level_index = 0;
 	_CoreData() {}
 };
 struct MainPlayerData
@@ -83,7 +84,7 @@ private:
 		data.verticalForce = GRAVITY*1.5f;
 		data.verticalDecay = GRAVITY;
 		data.hit_points = 100;
-		
+		data.max_hitpoints = 100;
 		return data;
 	}
 	static _CoreData Hannah()
@@ -97,6 +98,7 @@ private:
 		data.verticalForce = GRAVITY*2.0f;
 		data.verticalDecay = GRAVITY;
 		data.hit_points = 100;
+		data.max_hitpoints = 100;
 		return data;
 	}
 	static _CoreData Jack()
@@ -110,6 +112,7 @@ private:
 		data.verticalForce = GRAVITY*2.0f;
 		data.verticalDecay = GRAVITY;
 		data.hit_points = 100;
+		data.max_hitpoints = 100;
 		return data;
 	}
 	static _CoreData Colin()
@@ -123,6 +126,7 @@ private:
 		data.verticalForce = GRAVITY*2.0f;
 		data.verticalDecay = GRAVITY;
 		data.hit_points = 100;
+		data.max_hitpoints = 100;
 		return data;
 	}
 };

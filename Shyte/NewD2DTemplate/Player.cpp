@@ -134,6 +134,11 @@ void Player::HandleInput(Keyboard & kbd, Mouse & mouse)
 	
 }
 
+int Player::CurrentLevel()
+{
+	return m_coreData.level_index;
+}
+
 void Player::Save()
 {
 	MainPlayerData data;
