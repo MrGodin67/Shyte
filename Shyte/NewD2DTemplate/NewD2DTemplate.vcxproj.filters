@@ -55,6 +55,9 @@
     <Filter Include="UI">
       <UniqueIdentifier>{7032c085-7a60-400b-b837-35e10188252c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="UI\Tools">
+      <UniqueIdentifier>{e534e515-bec1-42d6-8c42-54b325a86ec8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -144,7 +147,13 @@
     <ClCompile Include="Player.cpp">
       <Filter>Objects\Player</Filter>
     </ClCompile>
-    <ClCompile Include="UserInput.cpp">
+    <ClCompile Include="Meter.cpp">
+      <Filter>UI\Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectUsers.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="UIManager.cpp">
       <Filter>UI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -284,11 +293,17 @@
     <ClInclude Include="Player.h">
       <Filter>Objects\Player</Filter>
     </ClInclude>
-    <ClInclude Include="UserInput.h">
-      <Filter>UI</Filter>
-    </ClInclude>
     <ClInclude Include="BackGround.h">
       <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Meter.h">
+      <Filter>UI\Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectUsers.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIManager.h">
+      <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

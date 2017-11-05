@@ -12,7 +12,14 @@ enum class EntityStates
 	numbStates
 };
 
-
+enum class _EntityType
+{
+	player,
+	enemy,
+	ridgid,
+	npc,
+	numbTypes
+};
 
 
 
@@ -22,9 +29,11 @@ class Entity : public Animation
 {
 	friend class Level;
 	_CoreData* CoreData() { return &m_coreData; }
+	
 protected:
 	
 	EntityStates m_currentState = EntityStates::idle;
+	_EntityType m_type;
 	_CoreData m_coreData;
 	
 public:
@@ -35,6 +44,8 @@ public:
 	virtual RectF GetCollisionRect(Vec2f& offset_translation) { return RectF(); };
 	virtual void SetState(EntityStates state) { m_currentState = state; };
 	virtual Vec2f GetCenter() = 0;
+	_EntityType Type() { return m_type; }
+	
 	
 	
 };

@@ -14,13 +14,7 @@
 #include "Level.h"
 #include "randomizer.h"
 #include "FileManager.h"
-#include "StartScreen.h"
-#include "NewGame.h"
-#include "coredata.h"
-#include "PausedScreen.h"
-#include "UserInput.h"
-#include "BackGround.h"
-
+#include "UIManager.h"
 
 class Game
 {
@@ -29,15 +23,16 @@ class Game
 	Graphics gfx;
 	void EndApp();
 	Camera m_cam;
-	
+	_GameData m_gameData;
 	_GameState m_gameState = _GameState::main;
 private:
 	std::unique_ptr<SoundManager> m_soundFX;
 	std::unique_ptr<TextureManager> m_textureHandler;
+	std::unique_ptr<UserInterfaceManager> m_userInterfaceManager;
 	std::unique_ptr<Player> m_player;
 	std::unique_ptr<Level> m_currLevel;
 	std::unique_ptr<BackGround> m_backGroundImage;
-
+	
 	std::unordered_map<std::string, std::unique_ptr<UserInterface>> m_menus;
 	UserInterface* m_currentMenu = nullptr;
 	UserInterface* m_previousMenu = nullptr;
@@ -49,6 +44,7 @@ private:
 	};
 	
 	std::string m_userName;
+	std::vector<std::string> m_users;
 public:
 	Game(class Direct3DWindow& wnd);
 	~Game();
@@ -64,7 +60,7 @@ private:
 	
 	void LoadAudio();
 	void LoadImages();
-	void CreatePlayer(PlayerData* data);
+	void CreatePlayer(MainPlayerData* data);
 	void InitMenus();
 	void CreateLevel(std::string mapFilename);
 	void ConstructLevelsFromTextFile(std::string mapFilename,int levelIndex);

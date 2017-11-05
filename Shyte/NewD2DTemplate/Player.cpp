@@ -1,23 +1,25 @@
 #include "Player.h"
 #include "Locator.h"
-
+#include "FileManager.h"
 
 Player::Player()
 {
 }
 
-Player::Player(Animation::RenderDesc & desc, PlayerData data, _CoreData core)
-	:data(data)
+Player::Player( PlayerData data, _CoreData core)
+	:m_data(data)
 {
+	m_renderDesc.drawRect = { 0.0f,0.0f,48.0f,64.0f };
+	m_renderDesc.clipRect = Locator::ImageManager()->GetImage(std::string(data.name))->GetClippedImage(4).ToD2D();
+	m_renderDesc.image = Locator::ImageManager()->GetImage(std::string(data.name))->GetTexture();
 	m_coreData = core;
-	m_drawWidth = desc.drawRect.right - desc.drawRect.left;
-	m_drawHeight = desc.drawRect.bottom - desc.drawRect.top;
-	m_renderDesc = desc;
+	m_drawWidth = m_renderDesc.drawRect.right - m_renderDesc.drawRect.left;
+	m_drawHeight = m_renderDesc.drawRect.bottom - m_renderDesc.drawRect.top;
 	seq_Indices["left"] = { 10,9,10,11 };
 	seq_Indices["right"] = { 4,3,4,5 };
 	seq_Indices["up"] = { 1,0,1,2 };
 	seq_Indices["down"] = { 7,6,7,8 };
-
+	m_type = _EntityType::player;
 	mp_seqPtr = &seq_Indices["left"];
 	
 }
@@ -25,6 +27,7 @@ Player::Player(Animation::RenderDesc & desc, PlayerData data, _CoreData core)
 
 Player::~Player()
 {
+	
 }
 
 void Player::Update(const float & dt)
@@ -32,7 +35,7 @@ void Player::Update(const float & dt)
 	
 	EntityState::DoState(m_currentState, m_coreData);
 	m_coreData.position += m_coreData.velocity  * dt;
-	m_renderDesc.clipRect = Locator::ImageManager()->GetImage(std::string(data.name))->GetClippedImage(mp_seqPtr->at(m_coreData.seq_Index)).ToD2D();
+	m_renderDesc.clipRect = Locator::ImageManager()->GetImage(std::string(m_data.name))->GetClippedImage(mp_seqPtr->at(m_coreData.seq_Index)).ToD2D();
 	m_renderDesc.drawRect = { m_coreData.position.x,m_coreData.position.y,
 		m_coreData.position.x + m_drawWidth,m_coreData.position.y + m_drawHeight };
 	m_center.x = m_renderDesc.drawRect.left + (m_drawWidth * 0.5f);
@@ -129,4 +132,14 @@ void Player::HandleInput(Keyboard & kbd, Mouse & mouse)
 	
 	
 	
+}
+
+void Player::Save()
+{
+	MainPlayerData data;
+	data.core = m_coreData;
+	data.data = m_data;
+	char fName[255];
+	sprintf_s(fName, "%s%s%s", "data\\", m_data.username, ".bin");
+	FileManager::WritePlayerData(fName, data);
 }

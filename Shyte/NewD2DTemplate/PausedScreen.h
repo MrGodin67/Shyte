@@ -8,9 +8,9 @@ class PausedScreen :
 	RectF m_buttons[3];
 	D2D1_COLOR_F m_selectColors[3] =
 	{
-		SELECT_COLOR_GREEN ,
-		SELECT_COLOR_GREEN ,
-		SELECT_COLOR_GREEN
+		SELECT_COLOR_NONE ,
+		SELECT_COLOR_NONE ,
+		SELECT_COLOR_NONE
 	};
 public:
 	PausedScreen();

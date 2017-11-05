@@ -2,13 +2,13 @@
 
 #include "UserInterface.h"
 #include "Player.h"
-
+#include "coredata.h"
 class NewGame : public UserInterface
 {
 	struct Players
 	{
 		RectF frame;
-		PlayerData data = {};
+		MainPlayerData info = {};
 	};
 	RectF        m_frame;
 	ID2D1Bitmap* m_image;
@@ -17,8 +17,8 @@ class NewGame : public UserInterface
 	Players*     m_selectedPlayer;
 	D2D1_COLOR_F m_selectButtonColors[2] =
 	{
-		SELECT_COLOR_GREEN ,
-		SELECT_COLOR_GREEN
+		SELECT_COLOR_NONE ,
+		SELECT_COLOR_NONE
 	};
 	
 public:

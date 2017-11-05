@@ -11,12 +11,19 @@ Game::Game(Direct3DWindow & wnd)
 		true, FULL_SCREEN,1000.0f,0.01f),
 	m_cam(&gfx,(float)wnd.ScreenWidth(), (float)wnd.ScreenHeight())
 {
+	if (DXStringHandler::DXDoesFileExist("data\\gm.bin"))
+	{
+		FileManager::ReadGameData("data\\gm.bin",m_gameData);
+		for (int c = 0; c < m_gameData.numbUsers; c++)
+			m_users.push_back(m_gameData.userNames[c]);
+	}
 	Locator::SetScreenDimensions(wnd.ScreenWidth(), wnd.ScreenHeight());
 	ConstructLevelsFromTextFile("map001.txt",0);
 	ConstructLevelsFromTextFile("map002.txt", 1);
 	ConstructLevelsFromTextFile("map003.txt", 2);
 	LoadImages();
 	InitMenus();
+	
 }
 
 Game::~Game()
@@ -38,7 +45,11 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 	
 	Mouse::Event mouse_event = window.mouse.Read();
 	Keyboard::Event kbd_event = window.kbd.ReadKey();
-	
+	if (window.kbd.KeyIsPressed('S'))
+	{
+		if (m_player.get())
+			m_player->Save();
+	}
 	switch (m_gameState)
 	{
 	case _GameState::running:
@@ -46,19 +57,16 @@ HRESULT Game::ConstructScene(const float& deltaTime)
 		m_currentBackgroundColor = m_backgroundColors[1];
 		if (window.kbd.KeyIsPressed(VK_ESCAPE))
 		{
-			m_currentMenu = m_menus["paused_screen"].get();
-			m_previousMenu = nullptr;
+			m_userInterfaceManager->SetCurrentScreen(std::string("paused_screen"));
 			m_gameState = _GameState::paused;
 			return S_OK;
 		}
 
 		m_player->HandleInput(window.kbd, window.mouse);
 
-		m_currLevel->DoCollision(m_player.get());
-		m_currLevel->DoSupported(m_player.get());
-		m_player->Update(deltaTime);
-		m_cam.UpdatePosition(m_player->GetPosition());
+		
 		m_currLevel->Update(deltaTime);
+		m_cam.UpdatePosition(m_player->GetPosition());
 	}
 	break;
 	case _GameState::main:
@@ -86,7 +94,7 @@ HRESULT Game::RenderScene()
 			m_backGroundImage->Draw(m_cam, gfx);
 			m_currLevel->Draw(gfx);
 			m_cam.Rasterize(m_player->GetDrawable());
-			m_currentMenu->Draw(gfx);
+			m_userInterfaceManager->Draw(gfx);
 		}
 		break;
 		case _GameState::running:
@@ -94,10 +102,11 @@ HRESULT Game::RenderScene()
 			m_backGroundImage->Draw(m_cam, gfx);
 			m_currLevel->Draw(gfx);
 			m_cam.Rasterize(m_player->GetDrawable());
+			
 		}break;
 		case _GameState::main:
 		{
-			m_currentMenu->Draw(gfx);
+			m_userInterfaceManager->Draw(gfx);
 		}break;
 	};
 	
@@ -126,16 +135,18 @@ void Game::LoadImages()
 {
 	m_textureHandler = std::make_unique<TextureManager>();
 	std::vector<TextureManager::ImageData> data;
-	data.emplace_back("colin", L"assets\\colin.png", 24.0f, 32.0f);
-	data.emplace_back("jack", L"assets\\jack.png", 24.0f, 32.0f);
-	data.emplace_back("maria", L"assets\\maria.png", 24.0f, 32.0f);
-	data.emplace_back("hannah", L"assets\\hannah.png", 24.0f, 32.0f);
+	data.emplace_back("Colin", L"assets\\colin.png", 24.0f, 32.0f);
+	data.emplace_back("Jack", L"assets\\jack.png", 24.0f, 32.0f);
+	data.emplace_back("Maria", L"assets\\maria.png", 24.0f, 32.0f);
+	data.emplace_back("Hannah", L"assets\\hannah.png", 24.0f, 32.0f);
 	data.emplace_back("level1", L"assets\\level1.png", 64.0f, 64.0f);
 	data.emplace_back("start_screen", L"assets\\startscreen.png", 48.0f, 16.0f);
 	data.emplace_back("paused_screen", L"assets\\pausedscreen.png", 48.0f, 16.0f);
 	data.emplace_back("input_screen", L"assets\\inputscreen.png", 48.0f, 16.0f);
 	data.emplace_back("new_game", L"assets\\new_game.png", 512.0f, 512.0f);
-	data.emplace_back("background", L"assets\\background.png", 1024.0f, 1024.0f);
+	data.emplace_back("background", L"assets\\background.png", 512.0f, 512.0f);
+	data.emplace_back("select_user", L"assets\\selectuser.png", 512.0f, 512.0f);
+	data.emplace_back("message_box", L"assets\\messagebox.png", 256.0f, 128.0f);
 
 	m_textureHandler->LoadImages(data);
 	Locator::SetImageManager(m_textureHandler.get());
@@ -144,34 +155,28 @@ void Game::LoadImages()
 	
 }
 
-void Game::CreatePlayer(PlayerData* data)
+void Game::CreatePlayer(MainPlayerData* data)
 {
-	Animation::RenderDesc desc;
+	
+	m_player = std::make_unique<Player>(data->data,data->core);
+	CreateLevel("data\\levels\\map001.bin");
+	//int& maxvalue, RectF mainFrame, RectF& meter_color, RectF& back_color, RectF& text_color,std::string textFont
 	
 	
-	desc.drawRect = { 0.0f,0.0f,48.0f,64.0f };
-	desc.clipRect = m_textureHandler->GetImage(std::string(data->name))->GetClippedImage(4).ToD2D();
-	desc.image = m_textureHandler->GetImage(std::string(data->name))->GetTexture();
-	m_player = std::make_unique<Player>(desc,*data, InitialPlayerCoreData::Get(std::string(data->name)));
-	
-	CreateLevel("data\\levels\\map003.bin");
 }
 
 void Game::InitMenus()
 {
-	m_menus["start_screen"] = std::make_unique<StartScreen>();
-	m_menus["paused_screen"] = std::make_unique<PausedScreen>();
-	m_menus["new_game"] = std::make_unique<NewGame>();
-	m_menus["user_input"] = std::make_unique<UserInput>();
-	m_currentMenu = m_menus["start_screen"].get();
+	m_userInterfaceManager = std::make_unique<UserInterfaceManager>();
+	m_userInterfaceManager->InitializeCurrentUsers(m_users);
 }
 
 void Game::CreateLevel(std::string mapFilename)
 {
 	if (m_currLevel.get())
 		m_currLevel.reset();
-	m_currLevel = std::make_unique<Level>(m_cam);
-	m_currLevel->Initialize(mapFilename, m_player.get());
+	m_currLevel = std::make_unique<Level>(m_cam,*m_player.get());
+	m_currLevel->Initialize(mapFilename);
 	m_backGroundImage->SetColorIndex(m_currLevel->CurrentLevelIndex());
 }
 
@@ -259,66 +264,38 @@ void Game::ConstructLevelsFromTextFile(std::string mapFilename,int levelIndex)
 
 void Game::HandleUserInterface(Mouse::Event& mouse_event, Keyboard::Event& kbd_event)
 {
-	if (!m_currentMenu)
-		return;
+	
 	
 	if (kbd_event.IsPress())
 	{
 		unsigned char key = kbd_event.GetCode();
-		ReturnType result_key = m_currentMenu->OnKeyPress(key);
-		switch (result_key.result)
-		{
-			case RETURN_ENTER:
-			{
-				switch (result_key.type)
-				{
-					case MENU_TYPE_INPUT:
-					{
-						m_userName = *(std::string*)result_key.data;
-						m_currentMenu = m_menus["new_game"].get();
-					}
-					break;
-				};
-			
-			}
-			break;// RETURN ENTER
-		}
+		ReturnType result_key = m_userInterfaceManager->OnKeyPress(key);
+		
 		
 	}
 	ReturnType result;
-	
+	m_userInterfaceManager->OnMouseMove(Vec2i(window.mouse.GetPosX(), window.mouse.GetPosY()));
 	if (mouse_event.LeftIsPressed())
 	{
 	
-		result = m_currentMenu->OnMouseClick({ mouse_event.GetPosX(),mouse_event.GetPosY() });
+		result = m_userInterfaceManager->OnMouseClick(Vec2i( mouse_event.GetPosX(),mouse_event.GetPosY() ));
 		switch (result.result)
 		{
-		case RETURN_NEW_BACK:
-			if (m_previousMenu != nullptr)
-			{
-				m_currentMenu = m_previousMenu;
-				m_previousMenu = nullptr;
-			}
-		case RETURN_RESUME:
-		{
-			if (m_player.get())
-			{
-				m_gameState = _GameState::running;
-				m_currentMenu = m_previousMenu = nullptr;
-			}
-		}
+		case RETURN_RESULT_RESUME:
+			m_gameState = _GameState::running;
 			break;
-		case RETURN_EXIT:
+		case RETURN_RESULT_EXIT:
 			EndApp();
 			break;
-		case RETURN_NEW:
-			m_previousMenu = m_currentMenu;
-			m_currentMenu = m_menus["user_input"].get();
-			break;
-		case RETURN_NEW_DONE:
+		case RETURN_RESULT_CREATE_NEW_GAME:
 		{
-			PlayerData* data = (PlayerData*)result.data;
-			sprintf_s(data->username, "%s", m_userName.c_str());
+			MainPlayerData* data = (MainPlayerData*)result.data;
+			if (m_gameData.numbUsers >= 9)
+				m_gameData.numbUsers = 9;
+			m_gameData.numbUsers++;
+
+			sprintf_s(m_gameData.userNames[m_gameData.numbUsers], "%s", data->data.username);
+			FileManager::WriteGameData("data\\gm.bin", m_gameData);
 			CreatePlayer(data);
 			m_gameState = _GameState::running;
 
@@ -328,10 +305,7 @@ void Game::HandleUserInterface(Mouse::Event& mouse_event, Keyboard::Event& kbd_e
 		
 			
 	}
-	else
-	{
-		m_currentMenu->OnMouseMove({ window.mouse.GetPos().first,window.mouse.GetPos().second });
-	}
+	
 }
 
 void Game::DrawLight()

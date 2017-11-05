@@ -13,6 +13,13 @@ public:
 	void Set(int horz) { horizontal = horz; }
 
 };
+struct PlayerData
+{
+	char username[255];
+	char name[255];
+	
+};
+
 class _CoreData
 {
 public:
@@ -25,16 +32,28 @@ public:
 	float verticalDecay = 0.0f;
 	float horizontalDecay = 0.0f;
 	float surfaceFriction = 0.0f;
+	float seq_Timer = 0.0f;
+	Vec2f velocity = { 0.0f,0.0f };
+	Vec2f position = { 0.0f,0.0f };
 	bool jumping = false;
 	bool climbing = false;
 	bool falling = false;
 	bool moving = false;
 	bool boosting = false;
 	int seq_Index = 0;
-	float seq_Timer = 0.0f;
-	Vec2f velocity = { 0.0f,0.0f };
-	Vec2f position = { 0.0f,0.0f };
+	int hit_points = 0;
+	int current_level = 0;
+	int numbPotions = 0;
+	int numbKeys = 0;
+	int exp_points = 0;
+	int exp_level = 0;
+	
 	_CoreData() {}
+};
+struct MainPlayerData
+{
+	PlayerData data;
+	_CoreData core;
 };
 class InitialPlayerCoreData
 {
@@ -63,6 +82,8 @@ private:
 		data.surfaceFriction = 0.876f;
 		data.verticalForce = GRAVITY*1.5f;
 		data.verticalDecay = GRAVITY;
+		data.hit_points = 100;
+		
 		return data;
 	}
 	static _CoreData Hannah()
@@ -75,6 +96,7 @@ private:
 		data.surfaceFriction = 0.876f;
 		data.verticalForce = GRAVITY*2.0f;
 		data.verticalDecay = GRAVITY;
+		data.hit_points = 100;
 		return data;
 	}
 	static _CoreData Jack()
@@ -87,6 +109,7 @@ private:
 		data.surfaceFriction = 0.876f;
 		data.verticalForce = GRAVITY*2.0f;
 		data.verticalDecay = GRAVITY;
+		data.hit_points = 100;
 		return data;
 	}
 	static _CoreData Colin()
@@ -99,6 +122,7 @@ private:
 		data.surfaceFriction = 0.876f;
 		data.verticalForce = GRAVITY*2.0f;
 		data.verticalDecay = GRAVITY;
+		data.hit_points = 100;
 		return data;
 	}
 };

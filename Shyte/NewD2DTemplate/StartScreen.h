@@ -7,11 +7,12 @@ class StartScreen : public UserInterface
 	RectF m_frame;
 	ID2D1Bitmap* m_image;
 	RectF m_buttons[3];
+	bool m_enableContinue = false;
 	D2D1_COLOR_F m_selectColors[3] = 
 	{
-		SELECT_COLOR_GREEN ,
-		SELECT_COLOR_GREEN ,
-	    SELECT_COLOR_GREEN 
+		SELECT_COLOR_NONE ,
+		SELECT_COLOR_NONE ,
+	    SELECT_COLOR_NONE 
 	};
 public:
 
@@ -27,5 +28,5 @@ public:
 
 	virtual ReturnType OnMouseMove(const Vec2i & mousePos)override;
 	
-
+	void EnableContinueButton(bool val);
 };

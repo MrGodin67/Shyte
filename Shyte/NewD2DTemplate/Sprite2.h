@@ -2,17 +2,7 @@
 #include "VecRect.h"
 #include "AnimationSequence.h"
 
-enum _EntityType
-{
-	drone,
-	fighter,
-	artillary,
-	radar,
-	turret,
-	tech,
-	data,
-	none
-};
+
 class TextSprite
 {
 protected:

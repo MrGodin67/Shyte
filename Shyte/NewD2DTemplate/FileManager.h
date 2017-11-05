@@ -20,7 +20,12 @@ struct _LevelFileData
 	
 
 };
+struct _GameData
+{
+	int numbUsers = 0;
+	char userNames[10][255];
 
+};
 
 class FileManager
 {
@@ -30,4 +35,6 @@ public:
 	static void ReadLevelData(const char* filename, _LevelFileData& data);
 	static void WritePlayerData(const char* filename, struct MainPlayerData& data);
 	static void ReadPlayerData(const char* filename, struct MainPlayerData& data);
+	static void WriteGameData(const char* filename, _GameData& data);
+	static void ReadGameData(const char* filename, _GameData& data);
 };

@@ -1,14 +1,28 @@
 #include "Level.h"
 #include "Locator.h"
 #include "Graphics.h"
-Level::Level(Camera & cam)
-	:m_cam(cam)
+Level::Level(Camera & cam,Player& player)
+	:m_cam(cam),m_player(player)
 {
 }
 
-void Level::Initialize(std::string  mapFilename,Player* p)
+void Level::Initialize(std::string  mapFilename)
 {
-	assert(p);
+	
+	m_healthMeter = std::make_unique<Meter>(m_player.CoreData()->hit_points, RectF(30.0f, 30.0f, 200.0f, 45.0f),
+		RectF(1.0f, 0.0f, 0.0f, 1.0f), RectF(0.0f, 1.0f, 0.0f, 0.5f),
+		RectF(1.0f, 1.0f, 1.0f, 1.0f), "Tahoma12");
+	std::string str = "Health";
+	m_healthMeter->SetCaption(str);
+	{
+		int val = 100;
+		m_expMeter = std::make_unique<Meter>(val, RectF(220.0f, 30.0f, 300.0f, 45.0f),
+			RectF(1.0f, 0.0f, 0.0f, 1.0f), RectF(0.0f, 1.0f, 0.0f, 0.5f),
+			RectF(1.0f, 1.0f, 1.0f, 1.0f), "Tahoma12");
+		std::string str = "Experience Level [ "+std::to_string(m_player.CoreData()->exp_level) +" ]";
+		m_expMeter->SetCaption(str);
+	}
+	
 	FileManager::ReadLevelData(mapFilename.c_str(), m_currentLevelData);
 	Tile::SetDimensions(m_currentLevelData.tileDimensions.x, m_currentLevelData.tileDimensions.y);
 	SpriteSheet* image = Locator::ImageManager()->GetImage("level1");
@@ -20,7 +34,7 @@ void Level::Initialize(std::string  mapFilename,Player* p)
 		(float)(m_currentLevelData.tileDimensions.x * m_currentLevelData.rowsColumns.x),
 		(float)(m_currentLevelData.tileDimensions.y * m_currentLevelData.rowsColumns.y)));
 	int clipIndex = 0;
-	p->UpdatePosition(m_currentLevelData.playerPos);
+	m_player.UpdatePosition(m_currentLevelData.playerPos);
 	m_cam.UpdatePosition(m_currentLevelData.playerPos);
 	for (int r = 0; r < m_currentLevelData.rowsColumns.y; r++)
 	{
@@ -50,7 +64,7 @@ void Level::Initialize(std::string  mapFilename,Player* p)
 			{
 				clipIndex = m_currentLevelData.levelIndex * image->Columns() + m_currentLevelData.map[r][c];
 				passable = false;
-				p->CoreData()->position = m_currentLevelData.playerPos;
+				
 			
 
 			}
@@ -108,6 +122,7 @@ void Level::Initialize(std::string  mapFilename,Player* p)
 void Level::Draw(Graphics& gfx)
 {
 	Tile* tile = nullptr;
+	//loop through visible tiles
 	for (int r = m_startDrawIndex.y; r <= m_endDrawIndex.y; r++)
 	{
 		for (int c = m_startDrawIndex.x; c <= m_endDrawIndex.x; c++)
@@ -116,6 +131,8 @@ void Level::Draw(Graphics& gfx)
 				m_cam.Rasterize(tile->GetDrawable());
 		}
 	}
+	m_healthMeter->Draw(gfx);
+	m_expMeter->Draw(gfx);
 }
 
 Vec2f Level::InitialPlayerPosition()
@@ -142,21 +159,41 @@ void Level::DoCollision(Entity * ent)
 void Level::DoSupported(Entity * ent)
 {
 	Tile* t;
-	t = GetTile(GetIndexOf({ ent->GetCollisionRect().left,ent->GetCollisionRect().bottom }));
-	if (!t)return;
+	if ((t = GetTile(GetIndexOf({ ent->GetCollisionRect().left,ent->GetCollisionRect().bottom }))) == nullptr)
+		return;
 	if (!t->Passable())return;
 
-	t = GetTile(GetIndexOf({ ent->GetCollisionRect().right,ent->GetCollisionRect().bottom }));
-	if (!t)return;
+	if ((t = GetTile(GetIndexOf({ ent->GetCollisionRect().right,ent->GetCollisionRect().bottom }))) == nullptr)
+		return;
 	if (!t->Passable())return;
 
-	EntityStates s = EntityStates::jumping;
-	ent->SetState(s);
+	
+	ent->SetState(EntityStates::jumping);
 
 }
 
 void Level::Update(const float & dt)
 {
+	// get index range for drawing visible tiles
+	DoCollision(&m_player);
+	DoSupported(&m_player);
+	m_player.Update(dt);
+	static float inc = 0.0f;
+	inc += dt;
+	if ((inc += dt) > 1.0f)
+	{
+		m_player.CoreData()->exp_points++;
+		inc = 0.0f;
+		if (m_player.CoreData()->exp_points >= 100)
+		{
+			m_player.CoreData()->exp_level++;
+			m_player.CoreData()->exp_points = 0;
+			std::string str = "Experience Level [ " + std::to_string(m_player.CoreData()->exp_level) + " ]";
+			m_expMeter->SetCaption(str);
+		}
+	}
+	m_healthMeter->Update((int)m_player.CoreData()->hit_points);
+	m_expMeter->Update(m_player.CoreData()->exp_points);
 	m_startDrawIndex = Vec2i(m_cam.GetPosition());
 	m_startDrawIndex /= (int)m_currentLevelData.tileDimensions.x;
 	Vec2i dims = { Locator::ScreenWidth<int>() , Locator::ScreenHeight<int>() };
@@ -183,14 +220,20 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 		{
 			ent->CoreData()->position.y -= py;
 			ent->CoreData()->velocity.y = 0.0f;
-			
-			ent->SetState( EntityStates::idle);
+			if(ent->Type() == _EntityType::player)
+			   ent->SetState( EntityStates::idle);
 		}
 		else
 		{
+			if (ent->Type() == _EntityType::player)
+			{
+				if (abs(ent->CoreData()->velocity.x) > 50.0f)
+					ent->CoreData()->hit_points--;
+			}
 			ent->CoreData()->position.x -= px;
 			ent->CoreData()->velocity.x = -(ent->CoreData()->velocity.x )* 0.5f;
 			ent->CoreData()->direction.Set(MOVE_LEFT);
+			
 		}
 		return;
 	}
@@ -200,12 +243,23 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 		py = tile_Rect.bottom - ent_Rect.top;
 		if ((-ent->CoreData()->velocity.y) * px > ent->CoreData()->velocity.x * py)
 		{
+			if (ent->Type() == _EntityType::player)
+			{
+				if (abs(ent->CoreData()->velocity.y) > 50.0f)
+					ent->CoreData()->hit_points--;
+			}
 			ent->CoreData()->position.y += py;
 			ent->CoreData()->velocity.y = 0.0f;
+			
 			
 		}
 		else
 		{
+			if (ent->Type() == _EntityType::player)
+			{
+				if (abs(ent->CoreData()->velocity.x) > 50.0f)
+					ent->CoreData()->hit_points--;
+			}
 			ent->CoreData()->position.x -= px;
 			ent->CoreData()->velocity.x = -(ent->CoreData()->velocity.x )* 0.5f;
 			ent->CoreData()->direction.Set(MOVE_LEFT);
@@ -223,13 +277,20 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 		{
 			ent->CoreData()->position.y -= py;
 			ent->CoreData()->velocity.y = 0.0f;
-			ent->SetState(EntityStates::idle);
+			if (ent->Type() == _EntityType::player)
+			    ent->SetState(EntityStates::idle);
 		}
 		else
 		{
+			if (ent->Type() == _EntityType::player)
+			{
+				if (abs(ent->CoreData()->velocity.x) > 50.0f)
+					ent->CoreData()->hit_points--;
+			}
 			ent->CoreData()->position.x += px;
 			ent->CoreData()->velocity.x = -(ent->CoreData()->velocity.x )* 0.5f;
 			ent->CoreData()->direction.Set(MOVE_RIGHT);
+			
 			
 		}
 		return;
@@ -240,6 +301,11 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 		py = tile_Rect.bottom - ent_Rect.top;
 		if ((-ent->CoreData()->velocity.y) * px > (-ent->CoreData()->velocity.x) * py)
 		{
+			if (ent->Type() == _EntityType::player)
+			{
+				if (abs(ent->CoreData()->velocity.y) > 50.0f)
+					ent->CoreData()->hit_points--;
+			}
 			ent->CoreData()->position.y += py;
 			ent->CoreData()->velocity.y = 0.0f;
 			
@@ -247,9 +313,15 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 		}
 		else
 		{
+			if (ent->Type() == _EntityType::player)
+			{
+				if (abs(ent->CoreData()->velocity.x) > 50.0f)
+					ent->CoreData()->hit_points--;
+			}
 			ent->CoreData()->position.x += px;
 			ent->CoreData()->velocity.x = -(ent->CoreData()->velocity.x) * 0.5f;
 			ent->CoreData()->direction.Set(MOVE_RIGHT);
+			
 			
 		}
 		return;

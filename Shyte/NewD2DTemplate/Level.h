@@ -4,11 +4,15 @@
 #include "Player.h"
 #include "Camera.h"
 #include "FileManager.h"
+#include "Meter.h"
 class Level
 {
 private:
 	std::vector<std::unique_ptr<Tile>> m_tiles;
+	std::unique_ptr<Meter> m_healthMeter;
+	std::unique_ptr<Meter> m_expMeter;
 	Camera& m_cam;
+	Player& m_player;
 	_LevelFileData m_currentLevelData;
 	Vec2i m_startDrawIndex;
 	Vec2i m_endDrawIndex;
@@ -49,9 +53,9 @@ private:
 
 public:
 	Level() = default;
-	Level(Camera& cam);
+	Level(Camera& cam, Player& player);
 	~Level() {}
-	void Initialize(std::string mapFilename,Player* p);
+	void Initialize(std::string mapFilename);
 	void Draw(class Graphics& gfx);
 	Vec2f InitialPlayerPosition();
 	void DoCollision(Entity* ent);

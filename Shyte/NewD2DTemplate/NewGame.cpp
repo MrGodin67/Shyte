@@ -12,38 +12,48 @@ NewGame::NewGame()
 	m_buttons[1] = {x+376.0f,y + 426.0f,x+460.0f,y+ 460.0f };
 
 	m_players[0].frame = {x+45.0f,y+65.0f,x+111.0f,y+138.0f};
-	sprintf_s(m_players[0].data.name, "%s", "maria");
+	sprintf_s(m_players[0].info.data.name, "%s", "Maria");
+	m_players[0].info.core = InitialPlayerCoreData::Get("maria");
+
 	m_players[1].frame = {x+45.0f,y+142.0f,x+111.0f,y+214.0f};
-	sprintf_s(m_players[1].data.name, "%s", "hannah");
+	sprintf_s(m_players[1].info.data.name, "%s", "Hannah");
+	m_players[1].info.core = InitialPlayerCoreData::Get("hannah");
+
 	m_players[2].frame = {x+46.0f,y+222.0f,x+111.0f,y+293.0f};
-	sprintf_s(m_players[2].data.name, "%s", "jack");
+	sprintf_s(m_players[2].info.data.name, "%s", "Jack");
+	m_players[2].info.core = InitialPlayerCoreData::Get("jack");
+
 	m_players[3].frame = {x+45.0f,y+300.0f,x+111.0f,y+372.0f};
-	sprintf_s(m_players[3].data.name, "%s", "colin");
+	sprintf_s(m_players[3].info.data.name, "%s", "Colin");
+	m_players[3].info.core = InitialPlayerCoreData::Get("colin");
 }
 
 ReturnType NewGame::OnMouseClick(const Vec2i & mousePos)
 {
 	ReturnType type;
-	type.type = MENU_TYPE_NEW_GAME;
-	if (m_buttons[0].Contains(mousePos))
+	if (m_enabled)
 	{
-		type.result = RETURN_NEW_BACK;
-		m_selectedPlayer = nullptr;
-	}
-
-	if (m_buttons[1].Contains(mousePos) && m_selectedPlayer)
-	{
-		type.result = RETURN_NEW_DONE;
-		type.data = &m_selectedPlayer->data;
-		
-	}
-	for (int c = 0; c < 4; c++)
-	{
-		if (m_players[c].frame.Contains(mousePos))
+		type.type = MENU_TYPE_NEW_GAME;
+		if (m_buttons[0].Contains(mousePos))
 		{
-			m_selectedPlayer = &m_players[c];
+			type.result = RETURN_RESULT_BACK;
+			m_selectedPlayer = nullptr;
 		}
-		
+
+		if (m_buttons[1].Contains(mousePos) && m_selectedPlayer)
+		{
+			type.result = RETURN_RESULT_DONE;
+			type.data = &m_selectedPlayer->info;
+
+		}
+		for (int c = 0; c < 4; c++)
+		{
+			if (m_players[c].frame.Contains(mousePos))
+			{
+				m_selectedPlayer = &m_players[c];
+			}
+
+		}
 	}
 	return type;
 }
@@ -51,24 +61,25 @@ ReturnType NewGame::OnMouseClick(const Vec2i & mousePos)
 ReturnType NewGame::OnMouseMove(const Vec2i & mousePos)
 {
 	ReturnType result;
-	
-	if (m_selectedPlayer)
+	if (m_enabled)
 	{
-		if (m_buttons[1].Contains(mousePos))
+		if (m_selectedPlayer)
 		{
-			m_selectButtonColors[1] = SELECT_COLOR_BLUE;
+			if (m_buttons[1].Contains(mousePos))
+			{
+				m_selectButtonColors[1] = SELECT_COLOR_BLUE;
+			}
+			else
+				m_selectButtonColors[1] = SELECT_COLOR_NONE;
 		}
-		else
-			m_selectButtonColors[1] = SELECT_COLOR_GREEN;
-	}
-	
+
 		if (m_buttons[0].Contains(mousePos))
 		{
 			m_selectButtonColors[0] = SELECT_COLOR_BLUE;
 		}
 		else
-			m_selectButtonColors[0] = SELECT_COLOR_GREEN;
-	
+			m_selectButtonColors[0] = SELECT_COLOR_NONE;
+	}
 	return result;
 }
 
@@ -79,7 +90,12 @@ ReturnType NewGame::OnKeyPress(unsigned char & key)
 
 void NewGame::Draw(Graphics & gfx)
 {
+	
 	gfx.DrawSprite(D2D1::Matrix3x2F::Identity(), m_frame.ToD2D(), m_image);
+	gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[1].ToD2D(), FULL_COLOR_WHITE);
+	if(!m_enabled)
+		gfx.DrawFilledScreenRectangle(m_frame.ToD2D(), D2D1::ColorF(0.5f,0.25f,0.25f,0.5f));
+
 	gfx.DrawFilledScreenRectangle(m_buttons[0].ToD2D(), m_selectButtonColors[0]);
 	gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[0].ToD2D(), FULL_COLOR_WHITE);
 

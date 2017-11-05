@@ -164,10 +164,12 @@
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="Locator.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Meter.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="NewGame.cpp" />
     <ClCompile Include="PausedScreen.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="SelectUsers.cpp" />
     <ClCompile Include="SimpleTimer.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sprite2.cpp" />
@@ -176,7 +178,7 @@
     <ClCompile Include="StringHandler.cpp" />
     <ClCompile Include="TextureManager.cpp" />
     <ClCompile Include="Tile.cpp" />
-    <ClCompile Include="UserInput.cpp" />
+    <ClCompile Include="UIManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation.h" />
@@ -204,6 +206,7 @@
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Locator.h" />
+    <ClInclude Include="Meter.h" />
     <ClInclude Include="mouse.h" />
     <ClInclude Include="NewGame.h" />
     <ClInclude Include="PausedScreen.h" />
@@ -211,6 +214,7 @@
     <ClInclude Include="randomizer.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="RenderTarget.h" />
+    <ClInclude Include="SelectUsers.h" />
     <ClInclude Include="SimpleTimer.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundEffect.h" />
@@ -218,7 +222,7 @@
     <ClInclude Include="Sprite2.h" />
     <ClInclude Include="SpriteSheet.h" />
     <ClInclude Include="StartScreen.h" />
-    <ClInclude Include="UserInput.h" />
+    <ClInclude Include="UIManager.h" />
     <ClInclude Include="UserInterface.h" />
     <ClInclude Include="StringHandler.h" />
     <ClInclude Include="TextureManager.h" />

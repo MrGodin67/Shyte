@@ -24,26 +24,31 @@ PausedScreen::~PausedScreen()
 ReturnType PausedScreen::OnMouseClick(const Vec2i & mousePos)
 {
 	ReturnType type;
-	type.type = MENU_TYPE_PAUSED;
-	if (m_buttons[0].Contains(mousePos))
-		type.result = RETURN_RESUME;
-	if (m_buttons[1].Contains(mousePos))
-		type.result = RETURN_EXIT;
-
+	if (m_enabled)
+	{
+		type.type = MENU_TYPE_PAUSED;
+		if (m_buttons[0].Contains(mousePos))
+			type.result = RETURN_RESULT_RESUME;
+		if (m_buttons[1].Contains(mousePos))
+			type.result = RETURN_RESULT_EXIT;
+	}
 	return type;
 }
 
 ReturnType PausedScreen::OnMouseMove(const Vec2i & mousePos)
 {
 	ReturnType result;
-	for (int c = 0; c < 2; c++)
+	if (m_enabled)
 	{
-		if (m_buttons[c].Contains(mousePos))
+		for (int c = 0; c < 2; c++)
 		{
-			m_selectColors[c] = SELECT_COLOR_BLUE;
+			if (m_buttons[c].Contains(mousePos))
+			{
+				m_selectColors[c] = SELECT_COLOR_BLUE;
+			}
+			else
+				m_selectColors[c] = SELECT_COLOR_NONE;
 		}
-		else
-			m_selectColors[c] = SELECT_COLOR_GREEN;
 	}
 	return result;
 }

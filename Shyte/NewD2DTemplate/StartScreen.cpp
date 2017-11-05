@@ -24,14 +24,19 @@ StartScreen::~StartScreen()
 ReturnType StartScreen::OnMouseClick(const Vec2i & mousePos)
 {
 	ReturnType type;
-	type.type = MENU_TYPE_START;
-	if (m_buttons[0].Contains(mousePos))
-		type.result = RETURN_CONTINUE;
-	if (m_buttons[1].Contains(mousePos))
-		type.result = RETURN_NEW;
-	if (m_buttons[2].Contains(mousePos))
-		type.result = RETURN_EXIT;
-
+	if (m_enabled)
+	{
+		type.type = MENU_TYPE_START;
+		if (m_enableContinue)
+		{
+			if (m_buttons[0].Contains(mousePos))
+				type.result = RETURN_RESULT_CONTINUE;
+		}
+		if (m_buttons[1].Contains(mousePos))
+			type.result = RETURN_RESULT_NEW_GAME;
+		if (m_buttons[2].Contains(mousePos))
+			type.result = RETURN_RESULT_EXIT;
+	}
 	return type;
 }
 
@@ -47,29 +52,36 @@ void StartScreen::Draw(Graphics& gfx)
 
 	for (int c = 0; c < 3; c++)
 	{
+		if (!m_enableContinue && c == 0)
+			continue;
 		gfx.DrawFilledScreenRectangle(m_buttons[c].ToD2D(), m_selectColors[c]);
 		gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[c].ToD2D(), FULL_COLOR_WHITE);
 	}
-	/*gfx.DrawFilledScreenRectangle(m_buttons[0].ToD2D(), SELECT_COLOR_GREEN);
-	gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[0].ToD2D(), FULL_COLOR_WHITE);
-	gfx.DrawFilledScreenRectangle(m_buttons[1].ToD2D(), SELECT_COLOR_GREEN); 
-	gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[1].ToD2D(), FULL_COLOR_WHITE);
-	gfx.DrawFilledScreenRectangle(m_buttons[2].ToD2D(), SELECT_COLOR_GREEN);
-	gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[2].ToD2D(), FULL_COLOR_WHITE);*/
+	
 }
 
 ReturnType StartScreen::OnMouseMove(const Vec2i & mousePos)
 {
 	ReturnType result;
-	for (int c = 0; c < 3; c++)
+	if (m_enabled)
 	{
-		if (m_buttons[c].Contains(mousePos))
+		for (int c = 0; c < 3; c++)
 		{
-			m_selectColors[c] = SELECT_COLOR_BLUE;
+			if (!m_enableContinue && c == 0)
+				continue;
+			if (m_buttons[c].Contains(mousePos))
+			{
+				m_selectColors[c] = SELECT_COLOR_BLUE;
+			}
+			else
+				m_selectColors[c] = SELECT_COLOR_NONE;
 		}
-		else
-			m_selectColors[c] = SELECT_COLOR_GREEN;
 	}
 	return result;
+}
+
+void StartScreen::EnableContinueButton(bool val)
+{
+	m_enableContinue = val;
 }
 

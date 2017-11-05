@@ -3,21 +3,7 @@
 #include "keyboard.h"
 #include "mouse.h"
 #include "EntityState.h"
-struct PlayerData
-{
-	char username[255];
-	char name[255];
-	int hit_points;
-	int current_level;
-	int numbPotions;
-	int numbKeys;
-	int exp_points;
-};
-struct MainPlayerData
-{
-	PlayerData data;
-	_CoreData core;
-};
+
 class Player :
 	public Entity
 {
@@ -27,11 +13,11 @@ class Player :
 	int seq_Index = 0;
 	std::array<int, 4>* mp_seqPtr;
 	float timer = 0.0f;
-	PlayerData data;
+	PlayerData m_data;
 	
 public:
 	Player();
-	Player(Animation::RenderDesc& desc,PlayerData data,_CoreData core);
+	Player(PlayerData data,_CoreData core);
 	~Player();
 
 	// Inherited via Entity
@@ -42,5 +28,6 @@ public:
 	virtual Vec2f GetCenter()override;
 	void UpdatePosition(Vec2f& pos);
 	void HandleInput(Keyboard& kbd, Mouse& mouse);
+	void Save();
 };
 
