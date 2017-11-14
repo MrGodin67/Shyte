@@ -27,7 +27,7 @@ ReturnType UserInterfaceManager::HandleStartScreen(ReturnType & data)
 	}
 	return ReturnType();
 }
-ReturnType UserInterfaceManager::HandleInputScreen(unsigned char& key)
+ReturnType UserInterfaceManager::HandleInputScreen(const unsigned char& key)
 {
 	ReturnType result;
 	if (m_pUserInput != nullptr)
@@ -186,8 +186,8 @@ ReturnType UserInterfaceManager::OnMouseClick(Vec2i & mousePos)
 	
 	if (m_pUserInput != nullptr)
 	{
-		HandleInputScreen(m_pUserInput->OnMouseClick(mousePos));
-		return ReturnType();
+		return HandleInputScreen(m_pUserInput->OnMouseClick(mousePos));
+		
 	}
 	if (m_pMessageBox != nullptr)
 	{
@@ -199,7 +199,6 @@ ReturnType UserInterfaceManager::OnMouseClick(Vec2i & mousePos)
 			case MENU_TYPE_INPUT:
 			{
 				m_currentScreen->Enabled(false);
-				
 				m_pUserInput = new UserInput(L"Enter Username", L"Username", MENU_TYPE_START);
 			}
 			};
@@ -236,15 +235,12 @@ ReturnType UserInterfaceManager::OnMouseMove(Vec2i & mousePos)
 		m_pUserInput->OnMouseMove(mousePos);
 	return ReturnType();
 }
-ReturnType UserInterfaceManager::OnKeyPress(unsigned char & key)
+ReturnType UserInterfaceManager::OnKeyPress(const unsigned char & key)
 {
-	ReturnType result;
-	result = HandleInputScreen(key);
-	
-	return result;
+	return HandleInputScreen(key);
 }
 
-void UserInterfaceManager::SetCurrentScreen(std::string & name)
+void UserInterfaceManager::SetCurrentScreen(const std::string & name)
 {
 	assert(m_screens[name].get());
 	m_currentScreen = m_screens[name].get();
@@ -272,7 +268,7 @@ void UserInterfaceManager::Message::Draw(Graphics & gfx)
 	gfx.RenderText((LPWSTR)m_caption.c_str(), pTextFormat, m_captionRect.ToD2D(), FULL_COLOR_WHITE);
 	for (int c = 0; c < 2; c++)
 	{
-		gfx.DrawFilledScreenRectangle(m_buttons[c].ToD2D(), m_selectedColors[c]);
+		gfx.DrawFilledRectangle(m_buttons[c].ToD2D(), m_selectedColors[c]);
 		gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[c].ToD2D(), FULL_COLOR_WHITE);
 	}
 	pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
@@ -283,7 +279,7 @@ void UserInterfaceManager::Message::Draw(Graphics & gfx)
 /////////////////////////////////////////////////////////////////////////////////////////
 // MESSAGE
 /////////////////////////////////////////////////////////////////////////////////////////
-ReturnType UserInterfaceManager::Message::OnMouseClick(Vec2i & mousePos)
+ReturnType UserInterfaceManager::Message::OnMouseClick(const Vec2i & mousePos)
 {
 	ReturnType result;
 	for (int c = 0; c < 2; c++)
@@ -298,7 +294,7 @@ ReturnType UserInterfaceManager::Message::OnMouseClick(Vec2i & mousePos)
 	return result;
 }
 
-ReturnType UserInterfaceManager::Message::OnMouseMove(Vec2i & mousePos)
+ReturnType UserInterfaceManager::Message::OnMouseMove(const Vec2i & mousePos)
 {
 	ReturnType result;
 	
@@ -389,7 +385,7 @@ ReturnType  UserInterfaceManager::UserInput::OnMouseMove(const Vec2i & mousePos)
 	return result;
 }
 
-ReturnType  UserInterfaceManager::UserInput::OnKeyPress(unsigned char & key)
+ReturnType  UserInterfaceManager::UserInput::OnKeyPress(const unsigned char & key)
 {
 	ReturnType result;
 	
@@ -410,7 +406,7 @@ ReturnType  UserInterfaceManager::UserInput::OnKeyPress(unsigned char & key)
 		if (key == VK_BACK)
 		{
 			if (m_text.size() > 0)
-				m_text.erase(m_text.begin() + m_text.size() - 1);
+				m_text.pop_back();
 		}
 		else
 		{
@@ -435,7 +431,7 @@ void  UserInterfaceManager::UserInput::Draw(Graphics & gfx)
 	gfx.RenderText((LPWSTR)m_caption.c_str(), pTextFormat, m_captionRect.ToD2D(), FULL_COLOR_WHITE);
 	for (int c = 0; c < 2; c++)
 	{
-		gfx.DrawFilledScreenRectangle(m_buttons[c].ToD2D(), m_selectedColors[c]);
+		gfx.DrawFilledRectangle(m_buttons[c].ToD2D(), m_selectedColors[c]);
 		gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[c].ToD2D(), FULL_COLOR_WHITE);
 	}
 	pTextFormat->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
@@ -445,7 +441,7 @@ void  UserInterfaceManager::UserInput::Draw(Graphics & gfx)
 	std::wstring out_text;
 	DXStringHandler::DXConvertFromStrToWStr(m_text, out_text);
 	
-	gfx.DrawFilledScreenRectangle(m_inputFrame.ToD2D(), SELECT_COLOR_BLUE);
+	gfx.DrawFilledRectangle(m_inputFrame.ToD2D(), SELECT_COLOR_BLUE);
 	gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_inputFrame.ToD2D(), FULL_COLOR_WHITE);
 	gfx.RenderText((LPWSTR)out_text.c_str(), pTextFormat,
 		m_drawRect.ToD2D(), FULL_COLOR_WHITE);

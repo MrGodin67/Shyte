@@ -1,6 +1,7 @@
 #include "Level.h"
 #include "Locator.h"
 #include "Graphics.h"
+#include "Mushroom.h"
 Level::Level(Camera & cam,Player& player)
 	:m_cam(cam),m_player(player)
 {
@@ -34,7 +35,7 @@ void Level::Initialize(std::string  mapFilename)
 		(float)(m_currentLevelData.tileDimensions.x * m_currentLevelData.rowsColumns.x),
 		(float)(m_currentLevelData.tileDimensions.y * m_currentLevelData.rowsColumns.y)));
 	int clipIndex = 0;
-	m_player.UpdatePosition(m_currentLevelData.playerPos);
+	m_player.SetPosition(m_currentLevelData.playerPos);
 	m_cam.UpdatePosition(m_currentLevelData.playerPos);
 	for (int r = 0; r < m_currentLevelData.rowsColumns.y; r++)
 	{
@@ -103,6 +104,15 @@ void Level::Initialize(std::string  mapFilename)
 				m_currentLevelData.exitPos.x + Tile::Width() ,m_currentLevelData.exitPos.y + Tile::Height() };
 			}
 			break;
+			case 8:// mushroom
+			{
+				m_enemies.push_back(std::make_unique<Mushroom>(InitialPlayerCoreData::Get("mushroom")));
+				m_enemies.back()->SetPosition(startPos);
+				clipIndex = 63;
+				passable = true;
+				
+			}
+			break;
 			}
 			if (walkable)
 			{
@@ -117,7 +127,7 @@ void Level::Initialize(std::string  mapFilename)
 		}
 		startPos.y += Tile::Height();
 	}
-	
+	GetCollisionRects();
 }
 
 void Level::Draw(Graphics& gfx)
@@ -134,8 +144,23 @@ void Level::Draw(Graphics& gfx)
 	}
 	gfx.GetD2DLayerViewPort()->Rasterize(m_healthMeter->GetDrawable());
 	gfx.GetD2DLayerViewPort()->Rasterize(m_expMeter->GetDrawable());
+	for (auto& it : m_enemies)
+		m_cam.Rasterize(it->GetDrawable());
+
+	float inc = 1.0f / (float)m_verticalLines.size();
+	float counter = 0.0f;
+	
+	
 	
 
+	for (auto& it : m_collisionRects)
+	{
+		RectF r = it;
+		r.Translate(-m_cam.GetPosition().x, -m_cam.GetPosition().y);
+		gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), r.ToD2D(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f));
+
+	}
+	
 }
 
 Vec2f Level::InitialPlayerPosition()
@@ -145,8 +170,10 @@ Vec2f Level::InitialPlayerPosition()
 
 void Level::DoCollision(Entity * ent)
 {
-	RectF cRect_ent = ent->GetCollisionRect();
-	Tile* pTile = nullptr;
+	
+	
+	
+	/*Tile* pTile = nullptr;
 	pTile = GetTileCollisionRect(cRect_ent,Vec2i(Sign(ent->GetPosition().x),Sign(ent->GetPosition().y)));
 	if(pTile != nullptr)
 	{
@@ -157,7 +184,52 @@ void Level::DoCollision(Entity * ent)
 			CorrectCollision(ent, tileCollisionRect);
 
 		}
+	}*/
+	for (auto& it : m_collisionRectsInView)
+	{
+		Vec2f correction;
+		RectF cRect_ent = m_player.GetCollisionRect();
+		
+		if (Intersect::BoundingBox(cRect_ent, it, correction))
+		{
+			
+			Vec2f player_pos = m_player.GetPosition();
+			Vec2f player_vel = m_player.GetVelocity();
+			Vec2i dir(Sign<int>(player_vel.x), Sign<int>(player_vel.y));
+			if (correction.x > correction.y)
+			{
+				player_pos.y += (-dir.y * correction.y);
+				player_vel.y = 0.0f;
+				m_player.SetPosition(player_pos);
+				m_player.SetVelocity(player_vel);
+				if (m_player.Type() == _EntityType::player)
+				{
+					dir.y > 0 ? m_player.SetState(EntityStates::idle) : m_player.SetState(EntityStates::jumping);
+				}
+				
+
+			}
+			else if(correction.x < correction.y)
+			{
+				
+				player_pos.x += (-dir.x * correction.x);
+				player_vel.x = -player_vel.x;
+				m_player.SetPosition(player_pos);
+				m_player.SetVelocity(player_vel);
+				m_player.CoreData()->direction.Set(-dir.x);
+			}
+			
+		}
 	}
+	
+	/*for (auto& it : m_collisionRectsInView)
+	{
+		if (cRect_ent.Overlaps(it))
+		{
+			CorrectCollision(ent, it);
+			break;
+		}
+	}*/
 	
 }
 
@@ -171,7 +243,7 @@ void Level::DoSupported(Entity * ent)
 	if ((t = GetTile(GetIndexOf({ ent->GetCollisionRect().right,ent->GetCollisionRect().bottom }))) == nullptr)
 		return;
 	if (!t->Passable())return;
-
+	
 	
 	ent->SetState(EntityStates::jumping);
 
@@ -180,6 +252,7 @@ void Level::DoSupported(Entity * ent)
 bool Level::Update(const float & dt)
 {
 	// get index range for drawing visible tiles
+	GetCollisionRectsInView(m_player.GetCenter());
 	DoCollision(&m_player);
 	DoSupported(&m_player);
 	m_player.Update(dt);
@@ -211,12 +284,50 @@ bool Level::Update(const float & dt)
 			m_player.CoreData()->level_index = 0;
 		return false;
 	}
+	for (auto& it : m_enemies)
+	{
+		DoCollision(it.get());
+		ConfineToPlatform(it.get());
+		it->Update(dt);
+	}
 	return true;
 }
 
 int Level::CurrentLevelIndex()
 {
 	return m_currentLevelData.levelIndex;
+}
+
+void Level::ConfineToPlatform(Entity * ent)
+{
+	int i =GetIndexOf(ent->GetPosition());
+	Tile* t = GetTileDiagonal(GetIndexOf(ent->GetPosition()), Sign(ent->CoreData()->velocity.x),1);
+	if (t)
+	{
+		if (t->Passable())
+		{
+			RectF tRect = t->CollisionRect();
+			RectF cRect = ent->GetCollisionRect();
+			if (Sign(ent->CoreData()->velocity.x) > 0)
+			{
+				if (abs(tRect.left - cRect.right) < 10.0f)
+				{
+					ent->CoreData()->direction.Set(-(Sign(ent->CoreData()->velocity.x)));
+					ent->CoreData()->velocity.x = -(ent->CoreData()->velocity.x);
+
+				}
+			}
+			else
+			{
+				if (cRect.left - tRect.right < 10.0f)
+				{
+					ent->CoreData()->direction.Set(-(Sign(ent->CoreData()->velocity.x)));
+					ent->CoreData()->velocity.x = -(ent->CoreData()->velocity.x);
+
+				}
+			}
+		}
+	}
 }
 
 void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
@@ -235,6 +346,8 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 			ent->CoreData()->velocity.y = 0.0f;
 			if(ent->Type() == _EntityType::player)
 			   ent->SetState( EntityStates::idle);
+			else
+				ent->SetState(EntityStates::moving);
 		}
 		else
 		{
@@ -248,7 +361,7 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 			ent->CoreData()->direction.Set(MOVE_LEFT);
 			
 		}
-		ent->UpdatePosition(ent->CoreData()->position);
+	
 		return;
 	}
 	if (vel.x > 0 && vel.y <= 0)
@@ -280,7 +393,7 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 			
 			
 		}
-		ent->UpdatePosition(ent->CoreData()->position);
+		
 		return;
 	}
 
@@ -294,6 +407,8 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 			ent->CoreData()->velocity.y = 0.0f;
 			if (ent->Type() == _EntityType::player)
 			    ent->SetState(EntityStates::idle);
+			else
+				ent->SetState(EntityStates::moving);
 		}
 		else
 		{
@@ -308,7 +423,7 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 			
 			
 		}
-		ent->UpdatePosition(ent->CoreData()->position);
+		
 		return;
 	}
 	if (vel.x <= 0 && vel.y <= 0)
@@ -340,12 +455,95 @@ void Level::CorrectCollision(Entity * ent, RectF tile_Rect)
 			
 			
 		}
-		ent->UpdatePosition(ent->CoreData()->position);
+		
 		return;
 	}
 	
 }
 
+void Level::GetCollisionRects()
+{
+	for (int r = 0; r < m_currentLevelData.rowsColumns.y; r++)
+	{
+		RectF rect;
+		for (int c = 0; c < m_currentLevelData.rowsColumns.x; c++)
+		{
+			const int index = r *m_currentLevelData.rowsColumns.x + c;
+			Tile* t = GetTile(index);
+			if (t)
+			{
+				if (!t->Passable())// solid
+				{
+					rect = t->CollisionRect();
+					// pass the column (c) as a reference so SetCollisionRect can iterate through
+					// the column and qwhen done, this (c) will be the new value
+					SetCollisionRectHorizontal(r, c, rect);
+					m_collisionRects.push_back(rect);
+					
+					
+				}
+				
+			}
+		}
+	}
+	
+}
+
+
+
+void Level::SetCollisionRectHorizontal(const int & row, int & col, RectF & rect)
+{
+	
+		for ( ;col < m_currentLevelData.rowsColumns.x-1; col++)
+		{
+			const int index = row *m_currentLevelData.rowsColumns.x + col;
+			Tile* t = GetTileHorizontal(index, 1);
+			Tile* t2 = GetTile(index);
+			if (t)
+			{
+				if (t->Passable() )
+					return;
+				else
+				{
+					if (t2->CollisionRect().GetHeight() > t->CollisionRect().GetHeight())
+					{
+						rect.right = t2->CollisionRect().right;
+						return;
+					}
+					else
+						rect.right = t->CollisionRect().right;
+				}
+			}
+
+		}
+	
+}
+bool Level::AreRectsTouching(const RectF & A, const RectF & B)
+{
+	return A.top <= B.bottom && A.bottom >= B.top &&
+		A.left <= B.right && A.right >= B.left;
+}
+void Level::GetCollisionRectsInView(Vec2f& player_pos)
+{
+	m_collisionRectsInView.clear();
+	// camera view frustum
+	RectF viewRect = m_cam.GetViewFrame();
+	for (auto& it : m_collisionRects)
+	{
+		// if any are inside the view rectangle
+		if (it.Overlaps(viewRect))
+			m_collisionRectsInView.push_back(it);
+	}
+	// sort by closest ? .. works but isn't too efficient
+	std::sort(m_collisionRectsInView.begin(), m_collisionRectsInView.end(), [player_pos](RectF& A, RectF& B)
+	{
+		// center of player to center of rectangle
+		Vec2f AC(A.left + A.GetWidth() * 0.5f, A.top + A.GetHeight() * 0.5f);
+		Vec2f BC(B.left + B.GetWidth() * 0.5f, B.top + B.GetHeight() * 0.5f);
+		return (player_pos - AC).LenSq() < (player_pos - BC).LenSq();
+	});
+
+}
 Tile * Level::GetTileVertical(const int& index, const int& dir)
 {
 	return GetTile(index + (m_currentLevelData.rowsColumns.y * dir));

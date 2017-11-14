@@ -53,7 +53,7 @@ ReturnType PausedScreen::OnMouseMove(const Vec2i & mousePos)
 	return result;
 }
 
-ReturnType PausedScreen::OnKeyPress(unsigned char & key)
+ReturnType PausedScreen::OnKeyPress(const unsigned char & key)
 {
 	return ReturnType();
 }
@@ -65,7 +65,7 @@ void PausedScreen::Draw(Graphics & gfx)
 
 	for (int c = 0; c < 2; c++)
 	{
-		gfx.DrawFilledScreenRectangle(m_buttons[c].ToD2D(), m_selectColors[c]);
+		gfx.DrawFilledRectangle(m_buttons[c].ToD2D(), m_selectColors[c]);
 		gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[c].ToD2D(), FULL_COLOR_WHITE);
 	}
 }

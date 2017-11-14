@@ -2,7 +2,7 @@
 #include "includes.h"
 #include "D2D1Texture.h"
 
-#include "Rect.h"
+
 class SpriteSheet
 {
 	float width;

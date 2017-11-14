@@ -11,6 +11,6 @@ public:
 	Button(RectF frame, ID2D1Bitmap* image,int returnValue);
 	// Inherited via UserInterface
 	virtual ReturnType OnMouseClick(const Vec2i & mousePos) override;
-	virtual ReturnType OnKeyPress(unsigned char & key) override;
+	virtual ReturnType OnKeyPress(const unsigned char & key) override;
 	virtual void Draw(Graphics & gfx) override;
 };

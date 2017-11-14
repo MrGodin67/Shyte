@@ -163,6 +163,8 @@ void Game::LoadImages()
 	data.emplace_back("Jack", L"assets\\jack.png", 24.0f, 32.0f);
 	data.emplace_back("Maria", L"assets\\maria.png", 24.0f, 32.0f);
 	data.emplace_back("Hannah", L"assets\\hannah.png", 24.0f, 32.0f);
+	data.emplace_back("mushroom", L"assets\\mush.png", 24.0f, 32.0f);
+	data.emplace_back("grass", L"assets\\grass.png", 24.0f, 32.0f);
 	data.emplace_back("level1", L"assets\\level1.png", 64.0f, 64.0f);
 	data.emplace_back("start_screen", L"assets\\startscreen.png", 48.0f, 16.0f);
 	data.emplace_back("paused_screen", L"assets\\pausedscreen.png", 48.0f, 16.0f);
@@ -315,6 +317,14 @@ void Game::ConstructLevelsFromTextFile(std::string mapFilename,int levelIndex)
 
 			}
 			break;
+			case 'm':
+			{
+
+				levelData.enemies[levelData.numbEnemies].position = startPos;
+				levelData.map[r][c] = 8;
+
+			}
+			break;
 			}
 			
 			startPos.x += levelData.tileDimensions.x;
@@ -340,7 +350,7 @@ void Game::HandleUserInterface(Mouse::Event& mouse_event, Keyboard::Event& kbd_e
 	}
 	ReturnType result;
 	m_userInterfaceManager->OnMouseMove(Vec2i(window.mouse.GetPosX(), window.mouse.GetPosY()));
-	if (mouse_event.LeftIsPressed())
+	if (mouse_event.GetType() == mouse_event.LPress)
 	{
 	
 		result = m_userInterfaceManager->OnMouseClick(Vec2i( mouse_event.GetPosX(),mouse_event.GetPosY() ));

@@ -63,9 +63,9 @@ void Meter::Draw(Graphics & gfx)
 		m_textRect = RectF(mFrame.left,  mFrame.top - m_textRectOffset, 400.0f, mFrame.top);
 		m_meterRect = RectF(mFrame.left, mFrame.top + 1.0f, mFrame.left, mFrame.bottom - 1.0f);
 	}
-	gfx.DrawFilledScreenRectangle(mFrame.ToD2D(), m_backColor);
+	gfx.DrawFilledRectangle(mFrame.ToD2D(), m_backColor);
 	gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), mFrame.ToD2D(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f));
-	gfx.DrawFilledScreenRectangle(m_meterRect.ToD2D(), m_meterColor);
+	gfx.DrawFilledRectangle(m_meterRect.ToD2D(), m_meterColor);
 	gfx.RenderText((LPWSTR)m_caption.c_str(), pTextFormat, m_textRect.ToD2D(), m_textColor);
 
 }
@@ -95,9 +95,9 @@ Meter::Drawable Meter::GetDrawable()
 
 void Meter::Drawable::Rasterize(Graphics& gfx)
 {
-	gfx.DrawFilledScreenRectangle(m_parent.m_mainFrame.ToD2D(), m_parent.m_backColor, matTrans);
+	gfx.DrawFilledRectangle(m_parent.m_mainFrame.ToD2D(), m_parent.m_backColor, matTrans);
 	gfx.DrawRectangle(matTrans, m_parent.m_mainFrame.ToD2D(), D2D1::ColorF(1.0f, 1.0f, 1.0f, 1.0f));
-	gfx.DrawFilledScreenRectangle(m_parent.m_meterRect.ToD2D(), m_parent.m_meterColor, matTrans);
+	gfx.DrawFilledRectangle(m_parent.m_meterRect.ToD2D(), m_parent.m_meterColor, matTrans);
 	gfx.RenderText((LPWSTR)m_parent.m_caption.c_str(), m_parent.pTextFormat, m_parent.m_textRect.ToD2D(), m_parent.m_textColor,matTrans);
 	
 

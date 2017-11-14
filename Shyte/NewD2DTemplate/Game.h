@@ -9,7 +9,6 @@
 
 #include "SoundManager.h"
 #include "Locator.h"
-#include "VecRect.h"
 #include "TextureManager.h"
 #include "Level.h"
 #include "randomizer.h"

@@ -39,6 +39,6 @@ public:
 		r.bottom =   r.top + 2024.0f;
 		
 		gfx.DrawSprite(D2D1::Matrix3x2F::Identity(), r, m_renderDesc.image);
-		gfx.DrawFilledScreenRectangle(r, m_diffuseColors[m_diffuseColorIndex]);
+		gfx.DrawFilledRectangle(r, m_diffuseColors[m_diffuseColorIndex]);
 	}
 };

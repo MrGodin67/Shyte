@@ -1,6 +1,6 @@
 #pragma once
-#include "Rect.h"
-#include "Vec2.h"
+
+
 #include "Locator.h"
 #include "RenderTarget.h"
 class ViewPort : public RenderTarget

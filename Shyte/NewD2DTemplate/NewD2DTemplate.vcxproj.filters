@@ -61,6 +61,12 @@
     <Filter Include="Objects\View Port">
       <UniqueIdentifier>{beebb45f-7b4c-4572-8f91-9684f3b5fafc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects\Enemy">
+      <UniqueIdentifier>{ad39ad4a-b2c8-419d-9656-ac79c59b8e5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Objects\Shapes">
+      <UniqueIdentifier>{ac79778b-8ee5-40a8-84b8-a440c144b43a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -162,15 +168,27 @@
     <ClCompile Include="ViewPort.cpp">
       <Filter>Objects\View Port</Filter>
     </ClCompile>
+    <ClCompile Include="Mushroom.cpp">
+      <Filter>Objects\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Line.cpp">
+      <Filter>Objects\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Rectangle.cpp">
+      <Filter>Objects\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Shape.cpp">
+      <Filter>Objects\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="ShapeCollisions.cpp">
+      <Filter>Objects\Shapes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="includes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Rect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SimpleTimer.h">
@@ -180,12 +198,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vec2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VecRect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Locator.h">
@@ -313,6 +325,27 @@
     </ClInclude>
     <ClInclude Include="ViewPort.h">
       <Filter>Objects\View Port</Filter>
+    </ClInclude>
+    <ClInclude Include="Mushroom.h">
+      <Filter>Objects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape.h">
+      <Filter>Objects\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Line.h">
+      <Filter>Objects\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Rectangle.h">
+      <Filter>Objects\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="ShapeCollisions.h">
+      <Filter>Objects\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils2D_v2.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

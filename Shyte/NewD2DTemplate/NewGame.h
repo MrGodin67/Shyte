@@ -27,7 +27,7 @@ public:
 	// Inherited via UserInterface
 	virtual ReturnType OnMouseClick(const Vec2i & mousePos) override;
 	virtual ReturnType OnMouseMove(const Vec2i & mousePos)override;
-	virtual ReturnType OnKeyPress(unsigned char & key) override;
+	virtual ReturnType OnKeyPress(const unsigned char & key) override;
 	virtual void Draw(Graphics & gfx) override;
 	
 };

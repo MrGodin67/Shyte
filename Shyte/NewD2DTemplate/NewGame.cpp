@@ -83,7 +83,7 @@ ReturnType NewGame::OnMouseMove(const Vec2i & mousePos)
 	return result;
 }
 
-ReturnType NewGame::OnKeyPress(unsigned char & key)
+ReturnType NewGame::OnKeyPress(const unsigned char & key)
 {
 	return ReturnType();
 }
@@ -94,16 +94,16 @@ void NewGame::Draw(Graphics & gfx)
 	gfx.DrawSprite(D2D1::Matrix3x2F::Identity(), m_frame.ToD2D(), m_image);
 	gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[1].ToD2D(), FULL_COLOR_WHITE);
 	if(!m_enabled)
-		gfx.DrawFilledScreenRectangle(m_frame.ToD2D(), D2D1::ColorF(0.5f,0.25f,0.25f,0.5f));
+		gfx.DrawFilledRectangle(m_frame.ToD2D(), D2D1::ColorF(0.5f,0.25f,0.25f,0.5f));
 
-	gfx.DrawFilledScreenRectangle(m_buttons[0].ToD2D(), m_selectButtonColors[0]);
+	gfx.DrawFilledRectangle(m_buttons[0].ToD2D(), m_selectButtonColors[0]);
 	gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[0].ToD2D(), FULL_COLOR_WHITE);
 
 	if (m_selectedPlayer)
 	{
-		gfx.DrawFilledScreenRectangle(m_buttons[1].ToD2D(), m_selectButtonColors[1]);
+		gfx.DrawFilledRectangle(m_buttons[1].ToD2D(), m_selectButtonColors[1]);
 		gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[1].ToD2D(), FULL_COLOR_WHITE);
-		gfx.DrawFilledScreenRectangle(m_selectedPlayer->frame.ToD2D(), SELECT_COLOR_BLUE);
+		gfx.DrawFilledRectangle(m_selectedPlayer->frame.ToD2D(), SELECT_COLOR_BLUE);
 	}
 	
 }

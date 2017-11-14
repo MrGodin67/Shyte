@@ -97,7 +97,7 @@ void Graphics::DrawLine(D2D1_MATRIX_3X2_F &matTrans, D2D1_POINT_2F start, D2D1_P
 	m_pD2DRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity());
 };
 //==============================================================================
-void Graphics::DrawFilledScreenRectangle(D2D1_RECT_F& rect, D2D1_COLOR_F& color, D2D1::Matrix3x2F& matrix)
+void Graphics::DrawFilledRectangle(D2D1_RECT_F& rect, D2D1_COLOR_F& color, D2D1_MATRIX_3X2_F& matrix)
 {
 	m_pD2DRenderTarget->SetTransform(matrix);
 	

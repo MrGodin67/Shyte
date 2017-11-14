@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Vec2.h"
+
 #include "includes.h"
-#include "Rect.h"
+
 #define RETURN_RESULT_NONE 0
 #define RETURN_RESULT_START 1
 #define RETURN_RESULT_EXIT 2
@@ -47,7 +47,7 @@ public:
 	
 	virtual ReturnType OnMouseClick(const Vec2i& mousePos) = 0;
 	virtual ReturnType OnMouseMove(const Vec2i& mousePos) = 0;
-	virtual ReturnType OnKeyPress(unsigned char& key) = 0;
+	virtual ReturnType OnKeyPress(const unsigned char& key) = 0;
 	virtual void Draw(class Graphics& gfx) = 0;
 	virtual bool Enabled() { return m_enabled; }
 	virtual void Enabled(const bool val) { m_enabled = val; }

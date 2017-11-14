@@ -162,14 +162,19 @@
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="Line.cpp" />
     <ClCompile Include="Locator.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Meter.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Mushroom.cpp" />
     <ClCompile Include="NewGame.cpp" />
     <ClCompile Include="PausedScreen.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="SelectUsers.cpp" />
+    <ClCompile Include="Shape.cpp" />
+    <ClCompile Include="ShapeCollisions.cpp" />
     <ClCompile Include="SimpleTimer.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="Sprite2.cpp" />
@@ -206,16 +211,20 @@
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="keyboard.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="Line.h" />
     <ClInclude Include="Locator.h" />
     <ClInclude Include="Meter.h" />
     <ClInclude Include="mouse.h" />
+    <ClInclude Include="Mushroom.h" />
     <ClInclude Include="NewGame.h" />
     <ClInclude Include="PausedScreen.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="randomizer.h" />
-    <ClInclude Include="Rect.h" />
+    <ClInclude Include="Rectangle.h" />
     <ClInclude Include="RenderTarget.h" />
     <ClInclude Include="SelectUsers.h" />
+    <ClInclude Include="Shape.h" />
+    <ClInclude Include="ShapeCollisions.h" />
     <ClInclude Include="SimpleTimer.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="SoundEffect.h" />
@@ -229,8 +238,8 @@
     <ClInclude Include="TextureManager.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Utils.h" />
-    <ClInclude Include="Vec2.h" />
-    <ClInclude Include="VecRect.h" />
+    <ClInclude Include="Utils2D.h" />
+    <ClInclude Include="Utils2D_v2.h" />
     <ClInclude Include="ViewPort.h" />
   </ItemGroup>
   <ItemGroup>

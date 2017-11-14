@@ -16,7 +16,7 @@ class UserInterfaceManager
 	UserInterface* m_currentScreen = nullptr;
 	UserInterface* m_perviousScreen = nullptr;
 	ReturnType HandleStartScreen(ReturnType& data);
-	ReturnType HandleInputScreen(unsigned char& key);
+	ReturnType HandleInputScreen(const unsigned char& key);
 	ReturnType HandleInputScreen(ReturnType& data);
 	ReturnType HandlePausedScreen(ReturnType& data);
 	ReturnType HandleSelectUserScreen(ReturnType& data);
@@ -29,8 +29,8 @@ public:
 	void Draw(class Graphics& gfx);
 	ReturnType OnMouseClick(Vec2i& mousePos);
 	ReturnType OnMouseMove(Vec2i& mousePos);
-	ReturnType OnKeyPress(unsigned char& key);
-	void SetCurrentScreen(std::string& name);
+	ReturnType OnKeyPress(const unsigned char& key);
+	void SetCurrentScreen(const std::string& name);
 	void InitializeCurrentUsers(std::vector<std::string>& usernames);
 private:
 	class Message
@@ -66,8 +66,8 @@ private:
 			
 		};
 		void Draw(class Graphics& gfx);
-		ReturnType OnMouseClick(Vec2i& mousePos);
-		ReturnType OnMouseMove(Vec2i& mousePos);
+		ReturnType OnMouseClick(const Vec2i& mousePos);
+		ReturnType OnMouseMove(const Vec2i& mousePos);
 	};
 	class UserInput 
 	{
@@ -94,10 +94,10 @@ private:
 		UserInput(std::wstring msg,std::wstring caption,int owner);
 		~UserInput();
 
-		// Inherited via UserInterface
+		
 		virtual ReturnType OnMouseClick(const Vec2i & mousePos) ;
 		virtual ReturnType OnMouseMove(const Vec2i & mousePos);
-		virtual ReturnType OnKeyPress(unsigned char & key);
+		virtual ReturnType OnKeyPress(const unsigned char & key);
 		virtual void Draw(Graphics & gfx) ;
 	};
 	Message* m_pMessageBox = nullptr;

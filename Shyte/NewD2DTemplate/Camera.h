@@ -2,8 +2,8 @@
 
 
 #include "includes.h"
-#include "Vec2.h"
-#include "Rect.h"
+
+
 #include "RenderTarget.h"
 class Camera : public RenderTarget
 {

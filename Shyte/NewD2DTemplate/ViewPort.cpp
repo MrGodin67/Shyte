@@ -7,6 +7,7 @@ ViewPort::ViewPort(RenderTarget * next, Vec2f & vp_size, Vec2f & windowSize)
 	float top = (windowSize.y * 0.5f) - (vp_size.y * 0.5f);
 	m_view = { left,top,left + vp_size.x,top + vp_size.y };
 	Locator::RenderTarget()->CreateLayer(NULL, &pLayer);
+	
 }
 
 void ViewPort::Rasterize(Drawable & obj)

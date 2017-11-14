@@ -69,19 +69,35 @@ public:
 			return Jack();
 		if (name == "colin")
 			return Colin();
+		if (name == "mushroom")
+			return Mush();
 		// no case so default;
 		return _CoreData();
 	}
 private:
+	static _CoreData Mush()
+	{
+		_CoreData data;
+		data.max_verticalForce = 0.0f;
+		data.acceleration = 2.0f;
+		data.horizontalDecay = 0.987f;
+		data.maxSpeed = 89.0f;
+		data.surfaceFriction = 0.476f;
+		data.verticalForce = 0.0f;
+		data.verticalDecay = GRAVITY;
+		data.hit_points = 10;
+		data.max_hitpoints = 10;
+		return data;
+	}
 	static _CoreData Maria()
 	{
 		_CoreData data;
-		data.max_verticalForce = 250.0f;
-		data.acceleration = 4.0f;
+		data.max_verticalForce = 450.0f;
+		data.acceleration = 12.0f;
 		data.horizontalDecay = 0.987f;
 		data.maxSpeed = 152.0f;
 		data.surfaceFriction = 0.876f;
-		data.verticalForce = GRAVITY*1.5f;
+		data.verticalForce = GRAVITY*4.5f;
 		data.verticalDecay = GRAVITY;
 		data.hit_points = 100;
 		data.max_hitpoints = 100;

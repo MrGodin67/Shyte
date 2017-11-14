@@ -40,7 +40,7 @@ ReturnType StartScreen::OnMouseClick(const Vec2i & mousePos)
 	return type;
 }
 
-ReturnType StartScreen::OnKeyPress(unsigned char & key)
+ReturnType StartScreen::OnKeyPress(const unsigned char & key)
 {
 	return ReturnType();
 }
@@ -54,7 +54,7 @@ void StartScreen::Draw(Graphics& gfx)
 	{
 		if (!m_enableContinue && c == 0)
 			continue;
-		gfx.DrawFilledScreenRectangle(m_buttons[c].ToD2D(), m_selectColors[c]);
+		gfx.DrawFilledRectangle(m_buttons[c].ToD2D(), m_selectColors[c]);
 		gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[c].ToD2D(), FULL_COLOR_WHITE);
 	}
 	

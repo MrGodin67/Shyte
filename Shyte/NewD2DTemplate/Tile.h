@@ -2,8 +2,8 @@
 
 #include "includes.h"
 #include "Animation.h"
-#include "Vec2.h"
-#include "Rect.h"
+
+
 class Tile : public Animation
 {
 private:

@@ -95,7 +95,7 @@ ReturnType SelectUsers::OnMouseMove(const Vec2i & mousePos)
 	return result;
 }
 
-ReturnType SelectUsers::OnKeyPress(unsigned char & key)
+ReturnType SelectUsers::OnKeyPress(const unsigned char & key)
 {
 	return ReturnType();
 }
@@ -105,12 +105,12 @@ void SelectUsers::Draw(Graphics & gfx)
 	gfx.DrawSprite(D2D1::Matrix3x2F::Identity(), m_frame.ToD2D(), m_image);
 	gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_frame.ToD2D(), FULL_COLOR_WHITE);
 	if (!m_enabled)
-		gfx.DrawFilledScreenRectangle(m_frame.ToD2D(), D2D1::ColorF(0.5f, 0.25f, 0.25f, 0.5f));
-	gfx.DrawFilledScreenRectangle(m_buttons[0].ToD2D(), m_selectButtonColors[0]);
+		gfx.DrawFilledRectangle(m_frame.ToD2D(), D2D1::ColorF(0.5f, 0.25f, 0.25f, 0.5f));
+	gfx.DrawFilledRectangle(m_buttons[0].ToD2D(), m_selectButtonColors[0]);
 	gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[0].ToD2D(), FULL_COLOR_WHITE);
-	gfx.DrawFilledScreenRectangle(m_buttons[1].ToD2D(), m_selectButtonColors[1]);
+	gfx.DrawFilledRectangle(m_buttons[1].ToD2D(), m_selectButtonColors[1]);
 	gfx.DrawRectangle(D2D1::Matrix3x2F::Identity(), m_buttons[1].ToD2D(), FULL_COLOR_WHITE);
-	gfx.DrawFilledScreenRectangle(m_textDisplayFrame.ToD2D(), BGRND_COLOR_WOOD);
+	gfx.DrawFilledRectangle(m_textDisplayFrame.ToD2D(), BGRND_COLOR_WOOD);
 	for (int c = 0; c < m_usersNames.size(); c++)
 	{
 		std::wstring str;
@@ -119,7 +119,7 @@ void SelectUsers::Draw(Graphics & gfx)
 		if (m_lines[c].selected)
 		{
 
-			gfx.DrawFilledScreenRectangle(m_selectedRect.ToD2D(), SELECT_COLOR_BLUE);
+			gfx.DrawFilledRectangle(m_selectedRect.ToD2D(), SELECT_COLOR_BLUE);
 		}
 		else
 			gfx.RenderText((LPWSTR)str.c_str(), pFormat, m_lines[c].frame.ToD2D(), BGRND_COLOR_WOOD);

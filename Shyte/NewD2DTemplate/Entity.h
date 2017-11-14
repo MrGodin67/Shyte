@@ -24,7 +24,6 @@ enum class _EntityType
 
 
 
-
 class Entity : public Animation
 {
 	friend class Level;
@@ -40,11 +39,13 @@ public:
 	Entity();
 	virtual void Update(const float& dt) = 0;
 	virtual Vec2f GetPosition() = 0;
+	virtual Vec2f GetVelocity() = 0;
+	virtual void SetVelocity(const Vec2f& vel) = 0;
 	virtual RectF GetCollisionRect() { return RectF(); };
 	virtual RectF GetCollisionRect(Vec2f& offset_translation) { return RectF(); };
 	virtual void SetState(EntityStates state) { m_currentState = state; };
 	virtual Vec2f GetCenter() = 0;
-	virtual void UpdatePosition(Vec2f& pos) = 0;
+	virtual void SetPosition(Vec2f& pos)override;
 	_EntityType Type() { return m_type; }
 
 	

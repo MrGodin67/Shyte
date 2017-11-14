@@ -14,7 +14,7 @@ ReturnType Button::OnMouseClick(const Vec2i & mousePos)
 	return ReturnType();
 }
 
-ReturnType Button::OnKeyPress(unsigned char & key)
+ReturnType Button::OnKeyPress(const unsigned char & key)
 {
 	return ReturnType();
 }

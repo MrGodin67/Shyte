@@ -1,8 +1,8 @@
 #pragma once
 
 #include "includes.h"
-#include "Rect.h"
-#include "Vec2.h"
+
+
 #include "Drawable.h"
 // Create as horizonatal/vertical via mainFrame rect ie: height > width
 class Meter

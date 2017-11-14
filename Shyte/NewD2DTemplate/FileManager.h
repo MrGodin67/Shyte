@@ -1,7 +1,7 @@
 #pragma once
 
 #include "includes.h"
-#include "Vec2.h"
+
 
 struct _EnemyData
 {
@@ -17,6 +17,7 @@ struct _LevelFileData
 	float surfaceFriction;
 	int levelIndex;
 	_EnemyData enemies[MAX_ENEMIES];
+	int numbEnemies = 0;
 	int map[MAX_TILES_PER_ROW][MAX_TILES_PER_COL];
 	
 

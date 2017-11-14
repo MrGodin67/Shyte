@@ -2,7 +2,7 @@
 
 #include "Drawable.h"
 #include "includes.h"
-#include "Rect.h"
+
 #include "SpriteSheet.h"
 
 class Animation
